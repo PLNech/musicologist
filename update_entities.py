@@ -20,7 +20,7 @@ headers = {"Authorization": "Bearer " + token_dev,
 ai = apiai.ApiAI(token_dev)
 
 
-def update_entities():
+def update_all():
     res = index.browse_all()
     song_names = set()
     song_synonyms = {}
@@ -41,19 +41,22 @@ def update_entities():
         song_names.add(song_name)
         artist_names.add(hit["artistName"])
 
-    data_songs = {'name': 'Song', 'entries': []}
-    for song in song_names:
-        entry = {'value': song}
-        if song in song_synonyms:
-            entry['synonyms'] = song_synonyms[song]
-        data_songs['entries'].append(entry)
-    json_songs = json.dumps(data_songs)
-    print("Songs payload: %s" % json_songs)
+    update_entity('Song', song_names, song_synonyms)
+    update_entity('Artist', artist_names)
 
-    print("Headers: %s" % headers)
-    res = requests.put(base_url + "/entities", data=json_songs, headers=headers)
+
+def update_entity(entity, names, synonyms=None):
+    data = {'name': entity, 'entries': []}
+    for name in names:
+        entry = {'value': name}
+        if synonyms and name in synonyms:
+            entry['synonyms'] = synonyms[name]
+        data['entries'].append(entry)
+    json_data = json.dumps(data)
+    print("%s payload: %s" % (entity, json_data))
+    res = requests.put(base_url + "/entities", data=json_data, headers=headers)
     print(res.json())
 
 
 if __name__ == "__main__":
-    update_entities()
+    update_all()
