@@ -1,23 +1,7 @@
 import json
-import os
-import apiai
 import requests
-from algoliasearch import algoliasearch
 
-# Algolia
-app_id = os.environ.get("ALGOLIA_APPLICATION_ID")
-api_key = os.environ.get("ALGOLIA_API_KEY")
-
-client = algoliasearch.Client(app_id, api_key)
-index = client.init_index("songs")
-
-# API.AI
-token_dev = '01df5cae360044deb39081f3d7a6bc1e'
-base_url = "https://api.api.ai/v1"
-headers = {"Authorization": "Bearer " + token_dev,
-           "Content-Type": "application/json"}
-
-ai = apiai.ApiAI(token_dev)
+from apis import index, apiai_url, headers
 
 
 def update_all():
@@ -52,7 +36,7 @@ def update_all():
 
 
 def update_entity(entity, names, synonyms=None):
-    res = requests.delete(base_url + "/entities/%s" % entity, headers=headers)
+    res = requests.delete(apiai_url + "/entities/%s" % entity, headers=headers)
     print("Delete existing %ss: %s." % (entity.lower(), res.json()['status']['errorType']))
     data = {'name': entity, 'entries': []}
     for name in names:
@@ -61,7 +45,7 @@ def update_entity(entity, names, synonyms=None):
             entry['synonyms'] = synonyms[name]
         data['entries'].append(entry)
     json_data = json.dumps(data)
-    res = requests.post(base_url + "/entities", data=json_data, headers=headers)
+    res = requests.post(apiai_url + "/entities", data=json_data, headers=headers)
     print("Send new %ss: %s.\n" % (entity, res.json()['status']['errorType']))
 
 
