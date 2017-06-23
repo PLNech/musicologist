@@ -26,13 +26,19 @@ def update_all():
     song_synonyms = {}
     artist_names = set()
 
-    # Store all songs (with synonyms) and artists
+    # Store all songs and artists
     for hit in res:
         song_name = hit["trackName"]
         if "(" in song_name:
-            split = song_name.split("(")
-            song_name = split[0]
-            song_synonym = split[1].replace(")", "")
+            # Store eventual synonyms
+            if song_name.startswith("("):
+                split = song_name.split(")")
+                song_name = split[1]
+                song_synonym = split[0].replace("(", "")
+            else:
+                split = song_name.split("(")
+                song_name = split[0]
+                song_synonym = split[1].replace(")", "")
             if song_name in song_synonyms:
                 song_synonyms[song_name].append(song_synonym)
             else:
@@ -46,6 +52,8 @@ def update_all():
 
 
 def update_entity(entity, names, synonyms=None):
+    res = requests.delete(base_url + "/entities/%s" % entity, headers=headers)
+    print("Delete existing %ss: %s." % (entity.lower(), res.json()['status']['errorType']))
     data = {'name': entity, 'entries': []}
     for name in names:
         entry = {'value': name}
@@ -53,9 +61,8 @@ def update_entity(entity, names, synonyms=None):
             entry['synonyms'] = synonyms[name]
         data['entries'].append(entry)
     json_data = json.dumps(data)
-    print("%s payload: %s" % (entity, json_data))
-    res = requests.put(base_url + "/entities", data=json_data, headers=headers)
-    print(res.json())
+    res = requests.post(base_url + "/entities", data=json_data, headers=headers)
+    print("Send new %ss: %s.\n" % (entity, res.json()['status']['errorType']))
 
 
 if __name__ == "__main__":
