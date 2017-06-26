@@ -28,6 +28,8 @@ action = result['action']
 if action == "search.artist":
     artist = result['parameters']['artist']
     period = result['parameters']['period']
+    if isinstance(period, list):
+        period = " / ".join(period)
     period_original = result['contexts'][0]['parameters']['period.original']
     hits = {}
     songs = []
