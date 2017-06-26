@@ -12,4 +12,6 @@ __Play the most relevant song__
 ## Search
 > Find songs from Rolling Stones
 > Find songs from Rolling Stones before 2000
-> Find the fastest song of 2005
+> Find songs released in 2000
+> Do you know music from 1960 to 1969?
+> _TODO Find the fastest song of 2005_
