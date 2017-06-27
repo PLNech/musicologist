@@ -10,6 +10,7 @@ from apis import index, ai
 
 
 if len(sys.argv) != 2:
+    print("Unrecognized argument: %s." % " ".join(sys.argv[1:]))
     print("Usage: %s QUERY")
     exit(1)
 else:
