@@ -26,7 +26,7 @@ json_obj = json.loads(response)
 result = json_obj['result']
 action = result['action']
 
-if action == "search.artist":
+if action == "search":
     artist = result['parameters']['artist']
     period = result['parameters']['period']
     if isinstance(period, list):
