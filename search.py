@@ -42,15 +42,15 @@ if action == "search.artist":
         (start, end) = period.split("/")
         date_start = parse(start)
         date_end = parse(end)
-        print("Period: %s to %s" % (start, end))
-        print("Period: %s to %s" % (date_start, date_end))
-        print("Searching for songs %s..." % period_original)
-        filters = 'release_timestamp: ' + str(int(date_start.timestamp())) + ' TO ' + str(int(date_end.timestamp()))
-        print("filters: %s" % filters)
+        print("Searching for songs released %s..." % period_original)
+        filters = 'release_timestamp: ' + str(date_start.timestamp()) + ' TO ' + str(date_end.timestamp())
         hits = index.search(artist, {'filters': filters})['hits']
         songs = [hit['trackName'] for hit in hits]
     else:
         print("NOTHING!!1! (%s)" % result['parameters'])
-    print("Found %s songs: %s." % (len(hits), ", ".join(songs)))
+    if len(songs):
+        print("Found %s songs: %s." % (len(hits), ", ".join(songs)))
+    else:
+        print("I'm afraid I know no song like this :(")
 else:
     print("Weird action: %s." % result['action'])
