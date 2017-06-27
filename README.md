@@ -14,4 +14,5 @@ __Play the most relevant song__
 > Find songs from Rolling Stones before 2000
 > Find songs released in 2000
 > Do you know music from 1960 to 1969?
+> Any new song since New Year's Eve?
 > _TODO Find the fastest song of 2005_
