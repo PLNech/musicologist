@@ -12,7 +12,7 @@ if len(sys.argv) != 2:
     exit(1)
 else:
     query = sys.argv[1]
-    print('Q: %s' % query)
+    print('Q: "%s"' % query)
 
 req = ai.text_request()
 req.session_id = str(uuid.uuid4())
