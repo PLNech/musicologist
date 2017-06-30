@@ -1,13 +1,10 @@
 #! /usr/bin/env python3
-import datetime
 import json
 import uuid
 import sys
 from dateutil.parser import parse
 
-
 from apis import index, ai
-
 
 if len(sys.argv) != 2:
     print("Unrecognized argument: %s." % " ".join(sys.argv[1:]))
@@ -27,27 +24,35 @@ result = json_obj['result']
 action = result['action']
 
 if action == "search":
+    search_term = None
+    params = {}
+    hits = {}
+    songs = []
     artist = result['parameters']['artist']
+    if len(artist) is 0:
+        artist = None
     period = result['parameters']['period']
     if isinstance(period, list):
         period = " / ".join(period)
     period_original = result['contexts'][0]['parameters']['period.original']
-    hits = {}
-    songs = []
-    if artist and not period:
-        print("Searching for %s..." % artist)
-        hits = index.search(artist)['hits']
-        songs = [hit['trackName'] for hit in hits]
-    elif period and not artist:
-        (start, end) = period.split("/")
-        date_start = parse(start)
-        date_end = parse(end)
-        print("Searching for songs released %s..." % period_original)
-        filters = 'release_timestamp: ' + str(date_start.timestamp()) + ' TO ' + str(date_end.timestamp())
-        hits = index.search(artist, {'filters': filters})['hits']
-        songs = [hit['trackName'] for hit in hits]
-    else:
+
+    if not artist and not period:
         print("NOTHING!!1! (%s)" % result['parameters'])
+    else:
+        if artist:
+            search_term = artist
+        if period:
+            (start, end) = period.split("/")
+            date_start = parse(start)
+            date_end = parse(end)
+            params['filters'] = 'release_timestamp: ' + str(date_start.timestamp()) + ' TO ' + str(date_end.timestamp())
+
+        artist_text = " by %s" % artist if artist is not None else ""
+        period_text = " %s" % period_original if period is not None else ""
+        print("Searching for songs" + artist_text + period_text)
+        hits = index.search(search_term, params)['hits']
+        songs = [hit['trackName'] for hit in hits]
+
     if len(songs):
         print("Found %s songs: %s." % (len(hits), ", ".join(songs)))
     else:
