@@ -10,8 +10,11 @@
 - > Any new song since New Year's Eve 2000?     
 
 # TODO
+
+improve dataset
 typo tolerance on artists?
-_Find the fastest song of 2005_
+solve missing words in input.original
+solve "the 80s/the 70s" generalisation issue
 # FIXME
 
 - Do you know music from the seventies?
