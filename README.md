@@ -1,18 +1,21 @@
+# Examples
+
+## Search
+> Any music released by Eminem?
+> Find songs made by the Rolling Stones since 2000
+> Find songs released in 1991
+> Do you know music from the seventies?
+> What tunes come from the 70s?
+> Any new song since New Year's Eve 2000?
+> _TODO Find the fastest song of 2005_
+
 # TODO
 typo tolerance on artists?
 
-# Examples
+# FIXME
 
-## Play
-__Play the most relevant song__
-> Play some Rolling Stones
-> Play a song for 5 minutes
-> Play a song from 2012
+- Do you know music from the seventies?
+-> `Searching for songs [missing] the seventies`
 
-## Search
-> Find songs from Rolling Stones
-> Find songs from Rolling Stones before 2000
-> Find songs released in 2000
-> Do you know music from 1960 to 1969?
-> Any new song since New Year's Eve?
-> _TODO Find the fastest song of 2005_
+- What tunes come from the 70s?
+-> `input.unknown`
