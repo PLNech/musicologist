@@ -39,8 +39,9 @@ for i, filename in enumerate(files):
 
     md_songs = f["/metadata/songs"]
     a_songs = f["/analysis/songs"]
+    b_songs = f["/musicbrainz/songs"]
 
-    for md_song, a_song in zip(md_songs, a_songs):
+    for md_song, a_song, b_song in zip(md_songs, a_songs, b_songs):
         codec = "utf8"
         song = {
             'artist_familiarity': get_and_sanitize(md_song, 2),
@@ -63,13 +64,14 @@ for i, filename in enumerate(files):
             'tempo': get_and_sanitize(a_song, 27),
             'time_signature': get_and_sanitize(a_song, 28),
             'time_signature_confidence': get_and_sanitize(a_song, 29),
+            'year': int(get_and_sanitize(b_song, 1)),
         }
         print("Song %i/%i: %s" % (i, count, song))
         songs.append(song)
 
 client = algoliasearch.client.Client(APP_ID, API_KEY)
-res = client.delete_index(INDEX_NAME)
-print("Delete index: %s." % res)
 index = client.init_index(INDEX_NAME)
+res = index.delete_by_query("*")
+print("Delete all objects: %s." % res)
 res = index.add_objects(songs)
 print("Add objects: %s." % res)
