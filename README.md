@@ -22,3 +22,10 @@ solve "the 80s/the 70s" generalisation issue
 
 - What tunes come from the 80s?
 -> `input.unknown`
+
+# Outline
+- Get user query
+- Send to API.AI for NLU
+- Parse response to get search parameters
+- Send to Algolia
+- Display results
