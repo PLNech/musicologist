@@ -1,11 +1,12 @@
 # Source
 
+[Download dataset](https://labrosa.ee.columbia.edu/millionsong/pages/getting-dataset)
+[Example track description](https://labrosa.ee.columbia.edu/millionsong/pages/example-track-description)
 [Analysis documentation](http://docs.echonest.com.s3-website-us-east-1.amazonaws.com/_static/AnalyzeDocumentation.pdf)
 
 
 ## Metadata fields
-
-See [schema](https://labrosa.ee.columbia.edu/millionsong/sites/default/files/AdditionalFiles/FileSchema.pdf)
+- See [schema](https://labrosa.ee.columbia.edu/millionsong/sites/default/files/AdditionalFiles/FileSchema.pdf)
 ```python
 import h5py
 f = h5py.File("/path/to/file", 'r')
