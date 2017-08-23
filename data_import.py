@@ -68,8 +68,8 @@ for i, filename in enumerate(files):
         songs.append(song)
 
 client = algoliasearch.client.Client(APP_ID, API_KEY)
-res = client.delete_index(INDEX_NAME)
-print("Delete index: %s." % res)
 index = client.init_index(INDEX_NAME)
+res = index.clear_index()
+print("Clear index: %s." % res)
 res = index.add_objects(songs)
 print("Add objects: %s." % res)
