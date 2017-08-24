@@ -1,7 +1,8 @@
 # Examples
 
 ## Search
-- > Any music released by Eminem?  
+- > Do you know songs by the rollin stun?
+- > Any music released by Eminim?  
 - > Find songs released in 1991  
 - > Do you know music from the seventies?  
 - > What tunes come from the 70s?  
