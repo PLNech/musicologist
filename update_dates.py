@@ -4,6 +4,7 @@ import requests
 from apis import index
 from dateutil import parser
 
+
 def update_all():
     res = index.browse_all()
 
@@ -13,7 +14,9 @@ def update_all():
         timestamp = int(parser.parse(song_date).timestamp())
         print("Date: %s -> Timestamp %s.\nUpdating..." % (song_date, timestamp))
         index.partial_update_object({"releaseTimestamp": timestamp,
+                                     "release_timestamp": {"value": timestamp, "_operation": "Remove"},#FIXME
                                      "objectID": hit["objectID"]})
+
 
 if __name__ == "__main__":
     update_all()
