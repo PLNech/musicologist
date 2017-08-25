@@ -1,30 +1,27 @@
 package com.algolia.musicologist;
 
 import android.Manifest;
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
-import java.util.List;
+import ai.api.android.AIConfiguration;
+import ai.api.model.AIError;
+import ai.api.model.AIResponse;
+import ai.api.ui.AIButton;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class MainActivity extends AppCompatActivity {
-    private static final int CODE_SPEECH_REQUEST = 0;
-    private static final int CODE_PERMISSION_REQUEST = 1;
+    private static final int CODE_PERMISSION_REQUEST = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +31,48 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         requestAudioPermission();
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+
+        configureApiAI();
+    }
+
+    private void configureApiAI() {
+        final AIConfiguration config = new AIConfiguration("01df5cae360044deb39081f3d7a6bc1e",
+                AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.RecognitionEngine.System);
+
+        AIButton aiButton = (AIButton) findViewById(R.id.micButton);
+
+        aiButton.initialize(config);
+        aiButton.setResultsListener(new AIButton.AIButtonListener() {
             @Override
-            public void onClick(View view) {
-                displaySpeechRecognizer();
+            public void onResult(final AIResponse result) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, result.getResult().getResolvedQuery(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onError(final AIError error) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("ApiAi", "onError");
+                        // TODO process error here
+                    }
+                });
+            }
+
+            @Override public void onCancelled() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("ApiAi", "onCancel");
+                        // TODO process error here
+                    }
+                });
             }
         });
     }
@@ -81,42 +115,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Create an intent that can start the Speech Recognizer activity
-    private void displaySpeechRecognizer() {
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        try {
-            startActivityForResult(intent, CODE_SPEECH_REQUEST);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(this, "You need at least a Voice Recognition Provider, such as Google Quick Search Box.", Toast.LENGTH_LONG).show();
-            String appPackageName = "com.google.android.googlequicksearchbox";
-            try {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-            } catch (android.content.ActivityNotFoundException anfe) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-            }
-
-        }
-    }
-
-    // This callback is invoked when the Speech Recognizer returns.
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode,
-                                    Intent data) {
-        if (requestCode == CODE_SPEECH_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                List<String> results = data.getStringArrayListExtra(
-                        RecognizerIntent.EXTRA_RESULTS);
-                String spokenText = results.get(0);
-                Toast.makeText(this, "Text: " + spokenText, Toast.LENGTH_SHORT).show();
-                // Do something with spokenText
-            } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "Cancelled.", Toast.LENGTH_SHORT).show();
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -132,9 +130,9 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
