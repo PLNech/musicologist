@@ -43,6 +43,12 @@ class MainActivity : VoiceActivity() {
         configureApiAI()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        textToSpeech.stop()
+        textToSpeech.shutdown()
+    }
+
     private fun configureApiAI() {
         aiButton.initialize(AIConfiguration("01df5cae360044deb39081f3d7a6bc1e",
                 ai.api.AIConfiguration.SupportedLanguages.English,
