@@ -10,7 +10,7 @@
     tools:showIn="@layout/activity_main">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/titleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="64dp"
@@ -26,14 +26,28 @@
     <ai.api.ui.AIButton
         android:id="@+id/micButton"
         style="@style/ApiAi.Microphone"
-        android:layout_width="240dp"
-        android:layout_height="240dp"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
         android:layout_marginLeft="64dp"
         android:layout_marginRight="64dp"
         android:layout_marginTop="32dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"/>
+        app:layout_constraintTop_toBottomOf="@+id/titleTextView"/>
+
+    <TextView
+        android:id="@+id/partialResultsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="64dp"
+        android:layout_marginRight="64dp"
+        android:layout_marginTop="16dp"
+        android:text=""
+        android:textAppearance="@android:style/TextAppearance.Material.Medium"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/micButton"
+        tools:text="Partial results text"/>
 
 
 </android.support.constraint.ConstraintLayout>
