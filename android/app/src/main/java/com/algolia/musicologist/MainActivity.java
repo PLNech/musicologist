@@ -3,16 +3,22 @@ package com.algolia.musicologist;
 import android.Manifest;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
+import ai.api.PartialResultsListener;
 import ai.api.android.AIConfiguration;
 import ai.api.model.AIError;
 import ai.api.model.AIResponse;
@@ -22,6 +28,7 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class MainActivity extends AppCompatActivity {
     private static final int CODE_PERMISSION_REQUEST = 0;
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +48,25 @@ public class MainActivity extends AppCompatActivity {
                 AIConfiguration.RecognitionEngine.System);
 
         AIButton aiButton = (AIButton) findViewById(R.id.micButton);
+        final TextView partialResultsTextView = (TextView) findViewById(R.id.partialResultsTextView);
 
         aiButton.initialize(config);
+        aiButton.setPartialResultsListener(new PartialResultsListener() {
+            @Override
+            public void onPartialResults(final List<String> partialResults) {
+                final String result = partialResults.get(0);
+                if (!TextUtils.isEmpty(result)) {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (partialResultsTextView != null) {
+                                partialResultsTextView.setText(result);
+                            }
+                        }
+                    });
+                }
+            }
+        });
         aiButton.setResultsListener(new AIButton.AIButtonListener() {
             @Override
             public void onResult(final AIResponse result) {
@@ -105,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                 delay = 1000;
             }
             // Explanation given or no explanation needed, we can request the permission.
-            new Handler().postDelayed(new Runnable() {
+            handler.postDelayed(new Runnable() {
                 @Override public void run() {
                     ActivityCompat.requestPermissions(MainActivity.this,
                             new String[]{Manifest.permission.RECORD_AUDIO},
