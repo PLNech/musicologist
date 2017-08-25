@@ -49,6 +49,20 @@ class MainActivity : VoiceActivity() {
         textToSpeech.shutdown()
     }
 
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        val id = item.itemId
+//        when (id) {
+//            R.id.action_settings -> return true
+//        }
+//        return super.onOptionsItemSelected(item)
+//    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
     private fun configureApiAI() {
         aiButton.initialize(AIConfiguration("01df5cae360044deb39081f3d7a6bc1e",
                 ai.api.AIConfiguration.SupportedLanguages.English,
@@ -116,20 +130,6 @@ class MainActivity : VoiceActivity() {
             }, delay.toLong())
         }
     }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        val id = item.itemId
-//        when (id) {
-//            R.id.action_settings -> return true
-//        }
-//        return super.onOptionsItemSelected(item)
-//    }
 
     companion object {
         private val CODE_PERMISSION_REQUEST = 0
