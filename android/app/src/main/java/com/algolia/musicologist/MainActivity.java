@@ -4,7 +4,9 @@ import android.Manifest;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +31,7 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 public class MainActivity extends AppCompatActivity {
     private static final int CODE_PERMISSION_REQUEST = 0;
     private final Handler handler = new Handler(Looper.getMainLooper());
+    private TextToSpeech textToSpeech;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,10 @@ public class MainActivity extends AppCompatActivity {
         requestAudioPermission();
 
         configureApiAI();
+
+        if (textToSpeech == null) {
+            textToSpeech = new TextToSpeech(this, null);
+        }
     }
 
     private void configureApiAI() {
@@ -47,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 
-        AIButton aiButton = (AIButton) findViewById(R.id.micButton);
+        final AIButton aiButton = (AIButton) findViewById(R.id.micButton);
         final TextView partialResultsTextView = (TextView) findViewById(R.id.partialResultsTextView);
 
         aiButton.initialize(config);
@@ -69,11 +76,13 @@ public class MainActivity extends AppCompatActivity {
         });
         aiButton.setResultsListener(new AIButton.AIButtonListener() {
             @Override
-            public void onResult(final AIResponse result) {
+            public void onResult(final AIResponse response) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(MainActivity.this, result.getResult().getResolvedQuery(), Toast.LENGTH_SHORT).show();
+                        final String speech = response.getResult().getFulfillment().getSpeech();
+                        textToSpeech.speak(speech, TextToSpeech.QUEUE_FLUSH, null);
+                        Snackbar.make(aiButton, speech, Snackbar.LENGTH_LONG).show();
                     }
                 });
             }
