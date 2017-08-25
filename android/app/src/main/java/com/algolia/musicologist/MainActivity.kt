@@ -13,7 +13,6 @@ import android.speech.tts.TextToSpeech
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.util.Log
@@ -21,7 +20,7 @@ import android.view.Menu
 import android.widget.TextView
 import android.widget.Toast
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : VoiceActivity() {
 
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var textToSpeech: TextToSpeech
@@ -34,13 +33,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar) as Toolbar)
 
-        requestAudioPermission()
-        configureApiAI()
-
         textToSpeech = TextToSpeech(this, null)
 
         aiButton = findViewById(R.id.micButton) as AIButton
         partialResultsTextView = findViewById(R.id.partialResultsTextView) as TextView
+
+
+        requestAudioPermission()
+        configureApiAI()
     }
 
     private fun configureApiAI() {
