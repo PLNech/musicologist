@@ -18,38 +18,34 @@ import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
-import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
 
 class MainActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
-    private var textToSpeech: TextToSpeech? = null
+    private lateinit var textToSpeech: TextToSpeech
+
+    private lateinit var aiButton: AIButton
+    private lateinit var partialResultsTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
-        setSupportActionBar(toolbar)
+        setSupportActionBar(findViewById(R.id.toolbar) as Toolbar)
 
         requestAudioPermission()
-
         configureApiAI()
 
-        if (textToSpeech == null) {
-            textToSpeech = TextToSpeech(this, null)
-        }
+        textToSpeech = TextToSpeech(this, null)
+
+        aiButton = findViewById(R.id.micButton) as AIButton
+        partialResultsTextView = findViewById(R.id.partialResultsTextView) as TextView
     }
 
     private fun configureApiAI() {
-        val config = AIConfiguration("01df5cae360044deb39081f3d7a6bc1e",
+        aiButton.initialize(AIConfiguration("01df5cae360044deb39081f3d7a6bc1e",
                 ai.api.AIConfiguration.SupportedLanguages.English,
-                AIConfiguration.RecognitionEngine.System)
-
-        val aiButton = findViewById(R.id.micButton) as AIButton
-        val partialResultsTextView = findViewById(R.id.partialResultsTextView) as TextView
-
-        aiButton.initialize(config)
+                AIConfiguration.RecognitionEngine.System))
         aiButton.setPartialResultsListener { partialResults ->
             val result = partialResults[0]
             if (!TextUtils.isEmpty(result)) {
@@ -60,7 +56,7 @@ class MainActivity : AppCompatActivity() {
             override fun onResult(response: AIResponse) {
                 runOnUiThread {
                     val speech = response.result.fulfillment.speech
-                    textToSpeech!!.speak(speech, TextToSpeech.QUEUE_FLUSH, null, null)
+                    textToSpeech.speak(speech, TextToSpeech.QUEUE_FLUSH, null, null)
                     Snackbar.make(aiButton, speech, Snackbar.LENGTH_LONG).show()
                 }
             }
@@ -121,19 +117,13 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-
-
-        //        if (id == R.id.action_settings) {
-        //            return true;
-        //        }
-
-        return super.onOptionsItemSelected(item)
-    }
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        val id = item.itemId
+//        when (id) {
+//            R.id.action_settings -> return true
+//        }
+//        return super.onOptionsItemSelected(item)
+//    }
 
     companion object {
         private val CODE_PERMISSION_REQUEST = 0
