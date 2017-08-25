@@ -22,6 +22,7 @@ import android.widget.TextView
 import android.widget.Toast
 
 class MainActivity : AppCompatActivity() {
+
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var textToSpeech: TextToSpeech
 
@@ -64,14 +65,13 @@ class MainActivity : AppCompatActivity() {
             override fun onError(error: AIError) {
                 runOnUiThread {
                     Log.d("ApiAi", "onError")
-                    // TODO process error here
+                    Snackbar.make(aiButton, "Error: " + error, Snackbar.LENGTH_LONG).show()
                 }
             }
 
             override fun onCancelled() {
                 runOnUiThread {
-                    Log.d("ApiAi", "onCancel")
-                    // TODO process error here
+                    Snackbar.make(aiButton, "Cancelled.", Snackbar.LENGTH_SHORT).show()
                 }
             }
         })
@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == CODE_PERMISSION_REQUEST) {
             if (grantResults.isNotEmpty() && grantResults[0] == PERMISSION_GRANTED) {
-                Toast.makeText(this, "Thanks! Looking forward to hearing your lovely voice.", Toast.LENGTH_LONG).show()
+                Snackbar.make(aiButton, "Thanks! Looking forward to hearing your lovely voice.", Snackbar.LENGTH_SHORT).show()
             } else {
                 requestAudioPermission()
             }
