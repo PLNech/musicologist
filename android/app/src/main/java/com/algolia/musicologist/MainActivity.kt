@@ -3,6 +3,7 @@ package com.algolia.musicologist
 import ai.api.android.AIConfiguration
 import ai.api.model.AIError
 import ai.api.model.AIResponse
+import ai.api.model.ResponseMessage
 import ai.api.ui.AIButton
 import android.Manifest
 import android.content.pm.PackageManager.PERMISSION_GRANTED
@@ -18,7 +19,10 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
 import android.widget.TextView
-import android.widget.Toast
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 
 class MainActivity : VoiceActivity() {
 
@@ -38,7 +42,7 @@ class MainActivity : VoiceActivity() {
         aiButton = findViewById(R.id.micButton) as AIButton
         partialResultsTextView = findViewById(R.id.partialResultsTextView) as TextView
 
-
+        wakeupBackend()
         requestAudioPermission()
         configureApiAI()
     }
@@ -80,8 +84,7 @@ class MainActivity : VoiceActivity() {
                     // TODO: Remove once merged https://github.com/api-ai/apiai-android-client/pull/62
                     partialResultsTextView.text = response.result.resolvedQuery
 
-                    val speech = response.result.fulfillment.speech
-                    say(speech)
+                    say(response.result.fulfillment.speech, delay = 500)
                 }
             }
 
@@ -101,20 +104,35 @@ class MainActivity : VoiceActivity() {
         })
     }
 
-    private fun say(speech: String, duration: Int = Snackbar.LENGTH_INDEFINITE) {
-        textToSpeech.speak(speech, TextToSpeech.QUEUE_FLUSH, null, null)
-        Snackbar.make(aiButton, speech, duration).show()
+    private fun wakeupBackend() {
+        Volley.newRequestQueue(this).add(StringRequest(Request.Method.GET,
+                "http://musicologist-backend.herokuapp.com/wakeup", Response.Listener {}, Response.ErrorListener { error ->
+            Log.e("MainActivity", "Backend seems down: " + error)
+            say("Oh oh... It seems my backend is down... I don't know music anymore...",
+                    text = "Oh oh... It seems my backend is down... I don't know music anymore... :'(", delay = 500)
+        }));
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == CODE_PERMISSION_REQUEST) {
             if (grantResults.isNotEmpty() && grantResults[0] == PERMISSION_GRANTED) {
-                say("Thanks! Looking forward to hearing your lovely voice.", Snackbar.LENGTH_SHORT)
+                say("Thanks! Looking forward to hearing your lovely voice.", duration = Snackbar.LENGTH_SHORT)
             } else {
                 requestAudioPermission()
             }
         }
+    }
+
+    private fun say(speech: String, duration: Int = Snackbar.LENGTH_INDEFINITE) {
+        say(speech, speech, duration, 0)
+    }
+
+    private fun say(speech: String, text: String? = null, duration: Int = Snackbar.LENGTH_INDEFINITE, delay: Long = 0) {
+        handler.postDelayed({
+            textToSpeech.speak(text ?: speech, TextToSpeech.QUEUE_FLUSH, null, null)
+            Snackbar.make(aiButton, speech, duration).show()
+        }, delay)
     }
 
     private fun requestAudioPermission() {
@@ -125,7 +143,7 @@ class MainActivity : VoiceActivity() {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.RECORD_AUDIO)) {
 
-                Toast.makeText(this, "This app only works if you allow it to record audio.", Toast.LENGTH_SHORT).show()
+                say("I can only talk with you if you let me record audio.")
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
