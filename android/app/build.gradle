@@ -26,6 +26,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
     compile 'com.android.support:design:25.3.1'
@@ -33,12 +35,13 @@ dependencies {
     compile('ai.api:libai:1.4.8') {
         exclude module: 'log4j-core'
     }
+
     // api.ai SDK dependencies
     // compile 'com.google.code.gson:gson:2.3'
     // compile 'commons-io:commons-io:2.4'
+    compile 'com.android.volley:volley:1.0.0'
 
     testCompile 'junit:junit:4.12'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 repositories {
     mavenCentral()
