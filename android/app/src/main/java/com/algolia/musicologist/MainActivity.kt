@@ -81,31 +81,36 @@ class MainActivity : VoiceActivity() {
                     partialResultsTextView.text = response.result.resolvedQuery
 
                     val speech = response.result.fulfillment.speech
-                    textToSpeech.speak(speech, TextToSpeech.QUEUE_FLUSH, null, null)
-                    Snackbar.make(aiButton, speech, Snackbar.LENGTH_LONG).show()
+                    say(speech)
                 }
             }
 
             override fun onError(error: AIError) {
                 runOnUiThread {
-                    Log.d("ApiAi", "onError")
-                    Snackbar.make(aiButton, "Error: " + error, Snackbar.LENGTH_LONG).show()
+                    Log.e("ApiAi", "Error: " + error)
+                    say("Error: " + error, Snackbar.LENGTH_LONG)
                 }
             }
 
             override fun onCancelled() {
                 runOnUiThread {
-                    Snackbar.make(aiButton, "Cancelled.", Snackbar.LENGTH_SHORT).show()
+                    Log.d("MainActivity", "Cancelled.")
+                    say("Cancelled.", Snackbar.LENGTH_SHORT)
                 }
             }
         })
+    }
+
+    private fun say(speech: String, duration: Int = Snackbar.LENGTH_INDEFINITE) {
+        textToSpeech.speak(speech, TextToSpeech.QUEUE_FLUSH, null, null)
+        Snackbar.make(aiButton, speech, duration).show()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == CODE_PERMISSION_REQUEST) {
             if (grantResults.isNotEmpty() && grantResults[0] == PERMISSION_GRANTED) {
-                Snackbar.make(aiButton, "Thanks! Looking forward to hearing your lovely voice.", Snackbar.LENGTH_SHORT).show()
+                say("Thanks! Looking forward to hearing your lovely voice.", Snackbar.LENGTH_SHORT)
             } else {
                 requestAudioPermission()
             }
