@@ -76,6 +76,10 @@ class MainActivity : VoiceActivity() {
         aiButton.setResultsListener(object : AIButton.AIButtonListener {
             override fun onResult(response: AIResponse) {
                 runOnUiThread {
+                    // Update with resolvedQuery until we have sorted partialResults
+                    // TODO: Remove once merged https://github.com/api-ai/apiai-android-client/pull/62
+                    partialResultsTextView.text = response.result.resolvedQuery
+
                     val speech = response.result.fulfillment.speech
                     textToSpeech.speak(speech, TextToSpeech.QUEUE_FLUSH, null, null)
                     Snackbar.make(aiButton, speech, Snackbar.LENGTH_LONG).show()
