@@ -68,7 +68,7 @@ class MainActivity : VoiceActivity() {
     }
 
     private fun configureApiAI() {
-        aiButton.initialize(AIConfiguration("***REMOVED***",
+        aiButton.initialize(AIConfiguration("b2a8a05cfbdb4162bbdfb9c2f4e48a4e",
                 ai.api.AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System))
         aiButton.setPartialResultsListener { partialResults ->
