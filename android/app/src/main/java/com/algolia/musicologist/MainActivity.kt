@@ -84,7 +84,13 @@ class MainActivity : VoiceActivity() {
                     // TODO: Remove once merged https://github.com/api-ai/apiai-android-client/pull/62
                     partialResultsTextView.text = response.result.resolvedQuery
 
-                    say(response.result.fulfillment.speech, delay = 500)
+                    val message: String = response.result.fulfillment.speech ?:
+                            response.result.fulfillment.messages
+                            .filter { it -> (it as ResponseMessage.ResponseSpeech).speech?.size != 0 }
+                            .map { it -> (it as ResponseMessage.ResponseSpeech).speech.joinToString("\n") }.joinToString()
+
+
+                    say(message, delay = 500)
                 }
             }
 
