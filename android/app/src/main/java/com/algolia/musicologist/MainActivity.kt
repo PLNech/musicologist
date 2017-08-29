@@ -86,8 +86,8 @@ class MainActivity : VoiceActivity() {
 
                     val message: String = response.result.fulfillment.speech ?:
                             response.result.fulfillment.messages
-                            .filter { it -> (it as ResponseMessage.ResponseSpeech).speech?.size != 0 }
-                            .map { it -> (it as ResponseMessage.ResponseSpeech).speech.joinToString("\n") }.joinToString()
+                                    .filter { it -> (it as ResponseMessage.ResponseSpeech).speech?.size != 0 }
+                                    .joinToString { it -> (it as ResponseMessage.ResponseSpeech).speech.joinToString("\n") }
 
 
                     say(message, delay = 500)
@@ -114,8 +114,8 @@ class MainActivity : VoiceActivity() {
         Volley.newRequestQueue(this).add(StringRequest(Request.Method.GET,
                 "http://musicologist-backend.herokuapp.com/wakeup", Response.Listener {}, Response.ErrorListener { error ->
             Log.e("MainActivity", "Backend seems down: " + error)
-            say("Oh oh... It seems my backend is down... I don't know music anymore...",
-                    text = "Oh oh... It seems my backend is down... I don't know music anymore... :'(", delay = 500)
+            val speech = "Oh oh... It seems my backend is down... I don't know music anymore..."
+            say(speech, speech + " :'(", 500)
         }));
     }
 
