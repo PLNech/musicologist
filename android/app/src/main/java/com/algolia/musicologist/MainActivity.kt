@@ -136,8 +136,8 @@ class MainActivity : VoiceActivity() {
 
     private fun say(speech: String, text: String? = null, duration: Int = Snackbar.LENGTH_INDEFINITE, delay: Long = 0) {
         handler.postDelayed({
-            textToSpeech.speak(text ?: speech, TextToSpeech.QUEUE_FLUSH, null, null)
-            Snackbar.make(aiButton, speech, duration).show()
+            textToSpeech.speak(speech, TextToSpeech.QUEUE_FLUSH, null, null)
+            Snackbar.make(aiButton, text ?: speech, duration).show()
         }, delay)
     }
 
