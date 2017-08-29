@@ -72,6 +72,9 @@ class MainActivity : VoiceActivity() {
                 ai.api.AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System))
         aiButton.setPartialResultsListener { partialResults ->
+            // If you're still talking, stop it TODO: Do it as soon as the button is pressed
+            textToSpeech.stop()
+
             val result = partialResults[0]
             if (!TextUtils.isEmpty(result)) {
                 handler.post { partialResultsTextView.text = result }
@@ -108,15 +111,6 @@ class MainActivity : VoiceActivity() {
                 }
             }
         })
-    }
-
-    private fun wakeupBackend() {
-        Volley.newRequestQueue(this).add(StringRequest(Request.Method.GET,
-                "http://musicologist-backend.herokuapp.com/wakeup", Response.Listener {}, Response.ErrorListener { error ->
-            Log.e("MainActivity", "Backend seems down: " + error)
-            val speech = "Oh oh... It seems my backend is down... I don't know music anymore..."
-            say(speech, speech + " :'(", 500)
-        }));
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -162,6 +156,15 @@ class MainActivity : VoiceActivity() {
                         CODE_PERMISSION_REQUEST)
             }, delay.toLong())
         }
+    }
+
+    private fun wakeupBackend() {
+        Volley.newRequestQueue(this).add(StringRequest(Request.Method.GET,
+                "http://musicologist-backend.herokuapp.com/wakeup", Response.Listener {}, Response.ErrorListener { error ->
+            Log.e("MainActivity", "Backend seems down: " + error)
+            val speech = "Oh oh... It seems my backend is down... I don't know music anymore..."
+            say(speech, speech + " :'(", 500)
+        }));
     }
 
     companion object {
