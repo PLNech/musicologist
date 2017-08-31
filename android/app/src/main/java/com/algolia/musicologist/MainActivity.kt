@@ -17,22 +17,20 @@ import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
-import android.widget.TextView
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import kotlinx.android.synthetic.main.content_main.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.find
+
 
 class MainActivity : VoiceActivity(), AnkoLogger {
 
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var textToSpeech: TextToSpeech
-
-    private lateinit var aiButton: AIButton
-    private lateinit var partialResultsTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,9 +38,6 @@ class MainActivity : VoiceActivity(), AnkoLogger {
         setSupportActionBar(find(R.id.toolbar))
 
         textToSpeech = TextToSpeech(this, null)
-
-        aiButton = find(R.id.micButton)
-        partialResultsTextView = find(R.id.partialResultsTextView)
 
         wakeupBackend()
         requestAudioPermission()
@@ -70,10 +65,10 @@ class MainActivity : VoiceActivity(), AnkoLogger {
     }
 
     private fun configureApiAI() {
-        aiButton.initialize(AIConfiguration("b2a8a05cfbdb4162bbdfb9c2f4e48a4e",
+        micButton.initialize(AIConfiguration("b2a8a05cfbdb4162bbdfb9c2f4e48a4e",
                 ai.api.AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System))
-        aiButton.setPartialResultsListener { partialResults ->
+        micButton.setPartialResultsListener { partialResults ->
             // If you're still talking, stop it TODO: Do it as soon as the button is pressed
             textToSpeech.stop()
 
@@ -82,7 +77,7 @@ class MainActivity : VoiceActivity(), AnkoLogger {
                 handler.post { partialResultsTextView.text = result }
             }
         }
-        aiButton.setResultsListener(object : AIButton.AIButtonListener {
+        micButton.setResultsListener(object : AIButton.AIButtonListener {
             override fun onResult(response: AIResponse) {
                 runOnUiThread {
                     // Update with resolvedQuery until we have sorted partialResults
@@ -131,7 +126,7 @@ class MainActivity : VoiceActivity(), AnkoLogger {
     private fun say(speech: String, text: String? = null, duration: Int = Snackbar.LENGTH_INDEFINITE, delay: Long = 0) {
         handler.postDelayed({
             textToSpeech.speak(speech, TextToSpeech.QUEUE_FLUSH, null, null)
-            Snackbar.make(aiButton, text ?: speech, duration).show()
+            Snackbar.make(micButton, text ?: speech, duration).show()
         }, delay)
     }
 
