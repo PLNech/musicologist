@@ -17,6 +17,9 @@ import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
+import com.algolia.instantsearch.helpers.InstantSearch
+import com.algolia.instantsearch.helpers.Searcher
+import com.algolia.search.saas.Client
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -31,6 +34,8 @@ class MainActivity : VoiceActivity(), AnkoLogger {
 
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var textToSpeech: TextToSpeech
+    private lateinit var instantSearch: InstantSearch
+    private lateinit var searcher: Searcher
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +47,9 @@ class MainActivity : VoiceActivity(), AnkoLogger {
         wakeupBackend()
         requestAudioPermission()
         configureApiAI()
+        searcher = Searcher.create(Client("TDNMRH8LS3", "ec222292c9b89b658fe00b34ff341194").getIndex("songs"))
+        instantSearch = InstantSearch(find<ResultsListView>(R.id.hits), searcher)
+        instantSearch.search()
     }
 
     override fun onDestroy() {
