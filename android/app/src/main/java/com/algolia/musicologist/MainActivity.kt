@@ -14,7 +14,6 @@ import android.speech.tts.TextToSpeech
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
@@ -23,8 +22,11 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.error
+import org.jetbrains.anko.find
 
-class MainActivity : VoiceActivity() {
+class MainActivity : VoiceActivity(), AnkoLogger {
 
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var textToSpeech: TextToSpeech
@@ -35,12 +37,12 @@ class MainActivity : VoiceActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(findViewById(R.id.toolbar) as Toolbar)
+        setSupportActionBar(find(R.id.toolbar))
 
         textToSpeech = TextToSpeech(this, null)
 
-        aiButton = findViewById(R.id.micButton) as AIButton
-        partialResultsTextView = findViewById(R.id.partialResultsTextView) as TextView
+        aiButton = find(R.id.micButton)
+        partialResultsTextView = find(R.id.partialResultsTextView)
 
         wakeupBackend()
         requestAudioPermission()
@@ -104,7 +106,7 @@ class MainActivity : VoiceActivity() {
 
             override fun onCancelled() {
                 runOnUiThread {
-                    Log.d("MainActivity", "Cancelled.")
+                    error("Cancelled.")
                     say("Cancelled.", Snackbar.LENGTH_SHORT)
                 }
             }
@@ -159,10 +161,10 @@ class MainActivity : VoiceActivity() {
     private fun wakeupBackend() {
         Volley.newRequestQueue(this).add(StringRequest(Request.Method.GET,
                 "http://musicologist-backend.herokuapp.com/wakeup", Response.Listener {}, Response.ErrorListener { error ->
-            Log.e("MainActivity", "Backend seems down: " + error)
+            error("Backend seems down: " + error)
             val speech = "Oh oh... It seems my backend is down... I don't know music anymore..."
             say(speech, speech + " :'(", 500)
-        }));
+        }))
     }
 
     companion object {
