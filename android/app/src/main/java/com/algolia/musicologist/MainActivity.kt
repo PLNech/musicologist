@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.speech.tts.TextToSpeech
+import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -19,28 +20,59 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
 import android.widget.TextView
+import android.widget.Toast
+import com.algolia.instantsearch.events.ResultEvent
+import com.algolia.instantsearch.helpers.InstantSearch
+import com.algolia.instantsearch.helpers.Searcher
+import com.algolia.instantsearch.ui.views.Hits
+import com.algolia.search.saas.Client
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.json.JSONObject
 
 class MainActivity : VoiceActivity() {
 
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var textToSpeech: TextToSpeech
+    private lateinit var bus: EventBus
+    private lateinit var searcher: Searcher
 
     private lateinit var aiButton: AIButton
     private lateinit var partialResultsTextView: TextView
 
+    @Subscribe
+    fun onResultEvent(event: ResultEvent) {
+        Toast.makeText(this, "Event:" + event, Toast.LENGTH_SHORT).show()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+//        DataBindingUtil.setContentView<HitsItemBinding>(this, R.layout.activity_main)
         setContentView(R.layout.activity_main)
+
         setSupportActionBar(findViewById(R.id.toolbar) as Toolbar)
 
         textToSpeech = TextToSpeech(this, null)
+        bus = EventBus.getDefault()
+        bus.register(this)
 
         aiButton = findViewById(R.id.micButton) as AIButton
         partialResultsTextView = findViewById(R.id.partialResultsTextView) as TextView
+        (findViewById(R.id.fab) as FloatingActionButton).setOnClickListener {
+            Toast.makeText(this, "TextRequest: Iron Maidens.", Toast.LENGTH_SHORT).show()
+//            Thread({
+//                aiButton.onResult(aiButton.textRequest("Do you know Iron Maidens songs?"))
+                searcher.search("Iron Maidens")
+//            }).start()
+        }
+
+        searcher = Searcher.create(Client("TDNMRH8LS3", "ec222292c9b89b658fe00b34ff341194").getIndex("songs"))
+        InstantSearch(findViewById(R.id.hits) as Hits, searcher)
 
         wakeupBackend()
         requestAudioPermission()
@@ -92,6 +124,9 @@ class MainActivity : VoiceActivity() {
                             ?.joinToString { it -> (it as ResponseMessage.ResponseSpeech).speech.joinToString("\n") }
                             ?: response.result.fulfillment.speech
                     say(message, delay = 500)
+
+                    val jsonObjectHits = JSONObject(response.result.parameters["data"].toString())
+                    searcher.forwardBackendSearchResult(jsonObjectHits)
                 }
             }
 

@@ -2,6 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
+    dataBinding {
+        enabled true
+    }
+    kapt {
+        generateStubs = true
+    }
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
@@ -31,15 +37,17 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
     compile 'com.android.support:design:25.3.1'
+
+    compile 'com.android.volley:volley:1.0.0'
+//    compile 'com.algolia:instantsearch-android:1.1.0'
+    compile project(':instantsearch')
+
     compile 'ai.api:sdk:2.0.7@aar'
     compile('ai.api:libai:1.4.8') {
         exclude module: 'log4j-core'
     }
 
-    // api.ai SDK dependencies
-    // compile 'com.google.code.gson:gson:2.3'
-    // compile 'commons-io:commons-io:2.4'
-    compile 'com.android.volley:volley:1.0.0'
+    kapt "com.android.databinding:compiler:$plugin_version"
 
     testCompile 'junit:junit:4.12'
 }
