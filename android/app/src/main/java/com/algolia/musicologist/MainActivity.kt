@@ -28,6 +28,7 @@ import kotlinx.android.synthetic.main.content_main.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.find
+import org.json.JSONObject
 
 
 class MainActivity : VoiceActivity(), AnkoLogger {
@@ -49,7 +50,6 @@ class MainActivity : VoiceActivity(), AnkoLogger {
         configureApiAI()
         searcher = Searcher.create(Client("TDNMRH8LS3", "ec222292c9b89b658fe00b34ff341194").getIndex("songs"))
         instantSearch = InstantSearch(find<ResultsListView>(R.id.hits), searcher)
-        instantSearch.search()
     }
 
     override fun onDestroy() {
@@ -97,6 +97,9 @@ class MainActivity : VoiceActivity(), AnkoLogger {
                             ?.joinToString { it -> (it as ResponseMessage.ResponseSpeech).speech.joinToString("\n") }
                             ?: response.result.fulfillment.speech
                     say(message, delay = 500)
+
+                    val jsonObjectHits = response.result.parameters["data"]?.toString()?.let { it -> JSONObject(it) }
+                    jsonObjectHits?.let { searcher.forwardBackendSearchResult(jsonObjectHits) }
                 }
             }
 
