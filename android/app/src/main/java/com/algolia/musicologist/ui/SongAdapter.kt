@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.algolia.musicologist.R
+import com.algolia.musicologist.model.Highlight
 import com.algolia.musicologist.model.HighlightedResult
 import com.algolia.musicologist.model.Song
 import com.nostra13.universalimageloader.core.DisplayImageOptions
@@ -45,11 +46,11 @@ internal class SongAdapter(context: Context, resource: Int) : ArrayAdapter<Highl
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val cell : View = convertView ?: LayoutInflater.from(context).inflate(R.layout.cell_song, parent, false)
+        val cell: View = convertView ?: LayoutInflater.from(context).inflate(R.layout.cell_song, parent, false)
         val result = getItem(position)
 
         imageLoader.displayImage(result!!.result.trackViewUrl, cell.preview, displayImageOptions)
-        cell.title.text = renderHighlights(result[Song.TITLE]?.highlightedValue)
+        cell.title.text = renderHighlights(result[Song.TITLE])
         cell.release.text = String.format("%d", result.result.release_timestamp)
 
         return cell
@@ -68,8 +69,9 @@ internal class SongAdapter(context: Context, resource: Int) : ArrayAdapter<Highl
         }
     }
 
-    private fun renderHighlights(markupString: String?): Spannable {
+    private fun renderHighlights(highlight: Highlight?): Spannable {
         val result = SpannableStringBuilder()
+        val markupString = highlight?.highlightedValue
         markupString?.let {
             val matcher = HIGHLIGHT_PATTERN.matcher(markupString)
             var p = 0 // current position in input string
@@ -83,7 +85,13 @@ internal class SongAdapter(context: Context, resource: Int) : ArrayAdapter<Highl
                 // Append highlighted text.
                 val highlightString = matcher.group(1)
                 result.append(highlightString)
-                result.setSpan(BackgroundColorSpan(context.resources.getColor(R.color.colorAccent)), q, q + highlightString.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                val color = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    context.resources.getColor(R.color.colorAccent, context.theme)
+                } else {
+                    @Suppress("DEPRECATION")
+                    context.resources.getColor(R.color.colorAccent)
+                }
+                result.setSpan(BackgroundColorSpan(color), q, q + highlightString.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 q += highlightString.length
                 p = matcher.end()
             }
