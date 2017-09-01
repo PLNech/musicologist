@@ -51,14 +51,16 @@ class SearchResultsJsonParser {
         val hits = jsonObject.optJSONArray("hits")
 
         for (hit in hits) {
-            val value = hit.optJSONObject("_highlightResult")?.
-                    optJSONObject(Song.TITLE)?.
-                    optString("value")
+            for (attribute in Song.HIGHLIGHT_ATTRIBUTES) {
+                val value = hit.optJSONObject("_highlightResult")?.
+                        optJSONObject(attribute)?.
+                        optString("value")
 
-            value?.let {
-                val parsed = parse(hit)
-                parsed?.let {
-                    results.add(HighlightedResult(parsed).addHighlight(Song.TITLE, value))
+                value?.let {
+                    val parsed = parse(hit)
+                    parsed?.let {
+                        results.add(HighlightedResult(parsed).addHighlight(attribute, value))
+                    }
                 }
             }
         }

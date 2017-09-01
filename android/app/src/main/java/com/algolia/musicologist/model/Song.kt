@@ -41,5 +41,6 @@ data class Song(val trackName: String,
     companion object {
         val TITLE = "trackName"
         val ARTIST = "artistName"
+        val HIGHLIGHT_ATTRIBUTES = listOf(Song.TITLE, Song.ARTIST)
     }
 }
