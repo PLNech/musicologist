@@ -11,12 +11,14 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.speech.tts.TextToSpeech
+import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
+import android.widget.Toast
 import com.algolia.instantsearch.helpers.InstantSearch
 import com.algolia.instantsearch.helpers.Searcher
 import com.algolia.musicologist.R
@@ -52,6 +54,14 @@ class MainActivity : VoiceActivity(), AnkoLogger {
         configureApiAI()
         searcher = Searcher.create(Client("TDNMRH8LS3", "ec222292c9b89b658fe00b34ff341194").getIndex("songs"))
         instantSearch = InstantSearch(find<ResultsListView>(R.id.hits), searcher)
+
+        (findViewById(R.id.fab) as FloatingActionButton).setOnClickListener {
+            Toast.makeText(this, "TextRequest: Led Zep.", Toast.LENGTH_SHORT).show()
+            Thread({
+                micButton.onResult(micButton.textRequest("Do you know Led Zep songs?"))
+//            searcher.search("Iron Maidens")
+            }).start()
+        }
     }
 
     override fun onDestroy() {
