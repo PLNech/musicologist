@@ -32,7 +32,7 @@ import java.util.*
 /**
  * Parses the JSON output of a search query.
  */
-class SearchResultsJsonParser {
+class SearchResultsParser {
     operator fun JSONArray.iterator():
             Iterator<JSONObject> = (0 until length()).asSequence()
             .map { get(it) as JSONObject }.iterator()
@@ -51,17 +51,17 @@ class SearchResultsJsonParser {
         val hits = jsonObject.optJSONArray("hits")
 
         for (hit in hits) {
-            for (attribute in Song.HIGHLIGHT_ATTRIBUTES) {
-                val value = hit.optJSONObject("_highlightResult")?.
-                        optJSONObject(attribute)?.
-                        optString("value")
-
-                value?.let {
-                    val parsed = parse(hit)
-                    parsed?.let {
-                        results.add(HighlightedResult(parsed).addHighlight(attribute, value))
+            val parsed = parse(hit)
+            parsed?.let {
+                val highlightedResult = HighlightedResult(parsed)
+                for (attribute in Song.HIGHLIGHT_ATTRIBUTES) {
+                    val value = hit.optJSONObject("_highlightResult")?.
+                            optJSONObject(attribute)?.optString("value")
+                    value?.let {
+                        highlightedResult.addHighlight(attribute, value)
                     }
                 }
+                results.add(highlightedResult)
             }
         }
         return results

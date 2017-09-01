@@ -13,7 +13,7 @@ import com.algolia.search.saas.Query
 class ResultsListView(context: Context, attrs: AttributeSet) : ListView(context, attrs),
         AlgoliaResultsListener, AlgoliaErrorListener {
     private val adapter: SongAdapter = SongAdapter(context, R.layout.cell_song)
-    private val resultsParser = SearchResultsJsonParser()
+    private val resultsParser = SearchResultsParser()
 
     init {
         setAdapter(adapter)
