@@ -21,7 +21,7 @@
 
     <style name="SongArtist">
         <item name="android:textColor">@color/songTitle</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="SongRelease">

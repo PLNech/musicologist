@@ -19,6 +19,8 @@ import com.nostra13.universalimageloader.core.ImageLoader
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer
 import kotlinx.android.synthetic.main.cell_song.view.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
+import org.jetbrains.anko.toast
 import java.util.regex.Pattern
 
 internal class SongAdapter(context: Context, resource: Int) : ArrayAdapter<HighlightedResult<Song>>(context, resource) {
@@ -31,7 +33,6 @@ internal class SongAdapter(context: Context, resource: Int) : ArrayAdapter<Highl
             .build()
 
     init {
-
         // Configure Universal Image Loader.
         Thread(Runnable {
             if (!imageLoader.isInited) {
@@ -48,11 +49,12 @@ internal class SongAdapter(context: Context, resource: Int) : ArrayAdapter<Highl
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val cell: View = convertView ?: LayoutInflater.from(context).inflate(R.layout.cell_song, parent, false)
         val result = getItem(position)
-
-        imageLoader.displayImage(result!!.result.trackViewUrl, cell.preview, displayImageOptions)
+        imageLoader.displayImage(result!!.result.artworkUrl100, cell.preview, displayImageOptions)
         cell.title.text = renderHighlights(result[Song.TITLE])
-        cell.release.text = String.format("%d", result.result.release_timestamp)
-
+        cell.artist.text = renderHighlights(result[Song.ARTIST])
+        cell.album.text = renderHighlights(result[Song.ALBUM])
+        cell.release.setTimestamp(result.result)
+        cell.onClick { this@SongAdapter.context.toast("Click on cell " + position + ": " + cell.title.text) }
         return cell
     }
 
@@ -104,5 +106,4 @@ internal class SongAdapter(context: Context, resource: Int) : ArrayAdapter<Highl
     companion object {
         internal val HIGHLIGHT_PATTERN = Pattern.compile("<em>([^<]*)</em>")
     }
-
 }
