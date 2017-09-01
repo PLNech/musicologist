@@ -1,4 +1,4 @@
-package com.algolia.musicologist
+package com.algolia.musicologist.ui
 
 import ai.api.android.AIConfiguration
 import ai.api.model.AIError
@@ -19,6 +19,8 @@ import android.util.Log
 import android.view.Menu
 import com.algolia.instantsearch.helpers.InstantSearch
 import com.algolia.instantsearch.helpers.Searcher
+import com.algolia.musicologist.R
+import com.algolia.musicologist.ResultsListView
 import com.algolia.search.saas.Client
 import com.android.volley.Request
 import com.android.volley.Response

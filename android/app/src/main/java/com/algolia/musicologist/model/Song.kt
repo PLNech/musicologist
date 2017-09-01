@@ -21,7 +21,7 @@
  * THE SOFTWARE.
  */
 
-package com.algolia.musicologist
+package com.algolia.musicologist.model
 
 /**
  * A song object from the data model.

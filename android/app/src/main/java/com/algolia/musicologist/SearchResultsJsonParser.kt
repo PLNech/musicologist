@@ -24,6 +24,7 @@
 package com.algolia.musicologist
 
 import com.algolia.musicologist.model.HighlightedResult
+import com.algolia.musicologist.model.Song
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*

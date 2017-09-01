@@ -1,4 +1,4 @@
-package com.algolia.musicologist
+package com.algolia.musicologist.ui
 
 import android.content.Context
 import android.os.Build
@@ -10,7 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import com.algolia.musicologist.R
 import com.algolia.musicologist.model.HighlightedResult
+import com.algolia.musicologist.model.Song
 import com.nostra13.universalimageloader.core.DisplayImageOptions
 import com.nostra13.universalimageloader.core.ImageLoader
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration

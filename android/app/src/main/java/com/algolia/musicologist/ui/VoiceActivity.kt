@@ -1,9 +1,10 @@
-package com.algolia.musicologist
+package com.algolia.musicologist.ui
 
 import android.os.Bundle
 import android.os.Handler
 import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
+import com.algolia.musicologist.VoiceApplication
 
 open class VoiceActivity : AppCompatActivity() {
 
