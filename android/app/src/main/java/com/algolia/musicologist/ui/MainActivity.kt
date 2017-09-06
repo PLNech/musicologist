@@ -29,6 +29,7 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.vdurmont.emoji.EmojiParser
 import kotlinx.android.synthetic.main.content_main.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
@@ -157,7 +158,7 @@ class MainActivity : VoiceActivity(), AnkoLogger {
 
     private fun say(speech: String, text: String? = null, duration: Int = Snackbar.LENGTH_INDEFINITE, delay: Long = 0) {
         handler.postDelayed({
-            textToSpeech.speak(speech, TextToSpeech.QUEUE_FLUSH, null, null)
+            textToSpeech.speak(EmojiParser.removeAllEmojis(speech), TextToSpeech.QUEUE_FLUSH, null, null)
             Snackbar.make(micButton, text ?: speech, duration).show()
         }, delay)
     }
