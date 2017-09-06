@@ -57,8 +57,9 @@ internal class SongAdapter(context: Context, resource: Int) : ArrayAdapter<Highl
         cell.title.text = renderHighlights(result[Song.TITLE])
         cell.artist.text = renderHighlights(result[Song.ARTIST])
         cell.album.text = renderHighlights(result[Song.ALBUM])
-        cell.release.setTimestamp(result.result)
-        cell.onClick { this@SongAdapter.context.toast("Click on cell " + position + ": " + cell.title.text) }
+        cell.track.text = "%d/%d".format(result.song.trackNumber, result.song.trackCount)
+        cell.release.setTimestamp(result.song)
+        cell.onClick { this@SongAdapter.context.toast("Cell %d: %s (%s).".format(position, cell.title.text, cell.title.text)) }
         return cell
     }
 

@@ -69,6 +69,18 @@ THE SOFTWARE.
         android:text="album"
         android:textStyle="italic"/>
 
+    <TextView
+        android:id="@+id/track"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/album"
+        android:layout_alignBottom="@+id/album"
+        android:layout_toEndOf="@+id/album"
+        android:padding="6dip"
+        android:text="1/42"
+        android:textSize="14sp"
+        android:textStyle="italic"/>
+
     <com.algolia.musicologist.ui.TimestampHitView
         android:id="@+id/release"
         style="@style/SongRelease"
