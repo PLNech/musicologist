@@ -10,6 +10,6 @@ import java.util.*
 
 class TimestampHitView(context: Context, attrs: AttributeSet) : AppCompatTextView(context, attrs) {
     fun setTimestamp(result: Song) {
-        text = PrettyTime().format(Date((result.release_timestamp * 1000).toLong()))
+        text = PrettyTime().format(Date(result.release_timestamp.toLong() * 1000))
     }
 }
