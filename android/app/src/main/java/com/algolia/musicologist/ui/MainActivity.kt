@@ -110,7 +110,7 @@ class MainActivity : VoiceActivity(), AnkoLogger {
                             ?: response.result.fulfillment.speech
                     say(message, delay = 500)
 
-                    val jsonObjectHits = response.result.parameters["data"]?.toString()?.let { it -> JSONObject(it) }
+                    val jsonObjectHits = response.result.fulfillment.data?.toString()?.let { it -> JSONObject(it) }
                     jsonObjectHits?.let { searcher.forwardBackendSearchResult(jsonObjectHits) }
                 }
             }
