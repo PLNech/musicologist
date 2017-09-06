@@ -1,7 +1,10 @@
 package com.algolia.musicologist.ui
 
+import android.app.SearchManager
 import android.content.Context
+import android.content.Intent
 import android.os.Build
+import android.provider.MediaStore
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -59,7 +62,18 @@ internal class SongAdapter(context: Context, resource: Int) : ArrayAdapter<Highl
         cell.album.text = renderHighlights(result[Song.ALBUM])
         cell.track.text = "%d/%d".format(result.song.trackNumber, result.song.trackCount)
         cell.release.setTimestamp(result.song)
-        cell.onClick { this@SongAdapter.context.toast("Cell %d: %s (%s).".format(position, cell.title.text, cell.title.text)) }
+        cell.onClick {
+            this@SongAdapter.context.toast("Cell %d: %s (%s).".format(position, cell.title.text, cell.title.text))
+            val intent = Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH)
+            intent.putExtra(MediaStore.EXTRA_MEDIA_FOCUS, MediaStore.Audio.Media.ENTRY_CONTENT_TYPE)
+                    .putExtra(MediaStore.EXTRA_MEDIA_ARTIST, result[Song.ARTIST].highlightedValue)
+                    .putExtra(MediaStore.EXTRA_MEDIA_TITLE, result[Song.TITLE].highlightedValue)
+                    .putExtra(SearchManager.QUERY, result[Song.TITLE].highlightedValue)
+            if (intent.resolveActivity(this@SongAdapter.context.packageManager) != null) {
+                this@SongAdapter.context.startActivity(intent)
+            }
+
+        }
         return cell
     }
 
