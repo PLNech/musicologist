@@ -2,6 +2,7 @@ package com.algolia.musicologist.ui
 
 import ai.api.android.AIConfiguration
 import ai.api.model.AIError
+import ai.api.model.AIRequest
 import ai.api.model.AIResponse
 import ai.api.model.ResponseMessage
 import ai.api.ui.AIButton
@@ -56,12 +57,20 @@ class MainActivity : VoiceActivity(), AnkoLogger {
         instantSearch = InstantSearch(find<ResultsListView>(R.id.hits), searcher)
 
         (findViewById(R.id.fab) as FloatingActionButton).setOnClickListener {
-            Toast.makeText(this, "TextRequest: Led Zep.", Toast.LENGTH_SHORT).show()
-            Thread({
-                micButton.onResult(micButton.textRequest("Do you know Led Zep songs?"))
-//            searcher.search("Iron Maidens")
-            }).start()
+            testRequest()
         }
+
+        testRequest()
+    }
+
+    private fun testRequest() {
+        Toast.makeText(this, "TextRequest: Led Zep.", Toast.LENGTH_SHORT).show()
+        val request = AIRequest("Do you know Led Zep songs?")
+        request.resetContexts = true
+        Thread({
+            micButton.onResult(micButton.textRequest(request))
+    //            searcher.search("Iron Maidens")
+        }).start()
     }
 
     override fun onDestroy() {
