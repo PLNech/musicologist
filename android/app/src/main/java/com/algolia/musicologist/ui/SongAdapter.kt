@@ -26,17 +26,21 @@ import java.util.regex.Pattern
 internal class SongAdapter(context: Context, resource: Int) : ArrayAdapter<HighlightedSong>(context, resource) {
 
     private val imageLoader: ImageLoader = ImageLoader.getInstance()
-    private val displayImageOptions: DisplayImageOptions = DisplayImageOptions.Builder()
-            .cacheOnDisk(true)
-            .resetViewBeforeLoading(true)
-            .displayer(FadeInBitmapDisplayer(300))
-            .build()
 
     init {
         // Configure Universal Image Loader.
         Thread(Runnable {
             if (!imageLoader.isInited) {
+                val placeholder = R.drawable.placeholder_record
                 val configuration = ImageLoaderConfiguration.Builder(context)
+                        .defaultDisplayImageOptions(DisplayImageOptions.Builder()
+                                .cacheOnDisk(true)
+                                .resetViewBeforeLoading(true)
+                                .displayer(FadeInBitmapDisplayer(300))
+                                .showImageOnLoading(placeholder)
+                                .showImageForEmptyUri(placeholder)
+                                .showImageOnFail(placeholder)
+                                .build())
                         .memoryCacheSize(2 * 1024 * 1024)
                         .memoryCacheSizePercentage(13) // default
                         .build()
@@ -49,7 +53,7 @@ internal class SongAdapter(context: Context, resource: Int) : ArrayAdapter<Highl
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val cell: View = convertView ?: LayoutInflater.from(context).inflate(R.layout.cell_song, parent, false)
         val result = getItem(position)
-        imageLoader.displayImage(result!!.result.artworkUrl100, cell.preview, displayImageOptions)
+        imageLoader.displayImage(result.song.artworkUrl100, cell.preview)
         cell.title.text = renderHighlights(result[Song.TITLE])
         cell.artist.text = renderHighlights(result[Song.ARTIST])
         cell.album.text = renderHighlights(result[Song.ALBUM])
