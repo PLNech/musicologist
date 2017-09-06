@@ -12,7 +12,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.algolia.musicologist.R
 import com.algolia.musicologist.model.Highlight
-import com.algolia.musicologist.model.HighlightedResult
+import com.algolia.musicologist.model.HighlightedSong
 import com.algolia.musicologist.model.Song
 import com.nostra13.universalimageloader.core.DisplayImageOptions
 import com.nostra13.universalimageloader.core.ImageLoader
@@ -23,7 +23,7 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.toast
 import java.util.regex.Pattern
 
-internal class SongAdapter(context: Context, resource: Int) : ArrayAdapter<HighlightedResult<Song>>(context, resource) {
+internal class SongAdapter(context: Context, resource: Int) : ArrayAdapter<HighlightedSong>(context, resource) {
 
     private val imageLoader: ImageLoader = ImageLoader.getInstance()
     private val displayImageOptions: DisplayImageOptions = DisplayImageOptions.Builder()
@@ -58,7 +58,7 @@ internal class SongAdapter(context: Context, resource: Int) : ArrayAdapter<Highl
         return cell
     }
 
-    override fun addAll(items: Collection<HighlightedResult<Song>>?) {
+    override fun addAll(items: Collection<HighlightedSong>?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             super.addAll(items)
         } else {

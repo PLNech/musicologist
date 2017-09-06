@@ -31,13 +31,13 @@ import java.util.*
 
  * @param <T> The data model type.
 </T> */
-class HighlightedResult<T>(val result: T) {
+class HighlightedSong(val song: Song) {
     private val highlights = HashMap<String, Highlight>()
 
-    fun addHighlight(attributeName: String, value: String): HighlightedResult<T> {
+    fun addHighlight(attributeName: String, value: String): HighlightedSong {
         highlights[attributeName] = Highlight(attributeName, value)
         return this
     }
 
-    operator fun get(attribute: String): Highlight? = highlights[attribute]
+    operator fun get(attribute: String): Highlight = highlights[attribute] ?: Highlight(attribute, song.json.getString(attribute))
 }

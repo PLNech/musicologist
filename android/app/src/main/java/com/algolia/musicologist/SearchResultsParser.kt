@@ -23,7 +23,7 @@
 
 package com.algolia.musicologist
 
-import com.algolia.musicologist.model.HighlightedResult
+import com.algolia.musicologist.model.HighlightedSong
 import com.algolia.musicologist.model.Song
 import org.json.JSONArray
 import org.json.JSONObject
@@ -44,16 +44,16 @@ class SearchResultsParser {
      * *
      * @return A list of results (potentially empty), or null in case of error.
      */
-    fun parseResults(jsonObject: JSONObject?): List<HighlightedResult<Song>>? {
+    fun parseResults(jsonObject: JSONObject?): List<HighlightedSong>? {
         jsonObject ?: return null
 
-        val results = ArrayList<HighlightedResult<Song>>()
+        val results = ArrayList<HighlightedSong>()
         val hits = jsonObject.optJSONArray("hits")
 
         for (hit in hits) {
             val parsed = parse(hit)
             parsed?.let {
-                val highlightedResult = HighlightedResult(parsed)
+                val highlightedResult = HighlightedSong(parsed)
                 for (attribute in Song.HIGHLIGHT_ATTRIBUTES) {
                     val value = hit.optJSONObject("_highlightResult")?.
                             optJSONObject(attribute)?.optString("value")
@@ -73,18 +73,18 @@ fun parse(jsonObject: JSONObject?): Song? {
     jsonObject?.let {
         val trackName = jsonObject.optString(Song.TITLE)
         val artistName = jsonObject.optString(Song.ARTIST)
-        val collectionName = jsonObject.optString("collectionName")
+        val collectionName = jsonObject.optString(Song.ALBUM)
         val trackPrice = jsonObject.optDouble("trackPrice")
         val trackNumber = jsonObject.optInt("trackNumber")
-        val primaryGenreName = jsonObject.optString("primaryGenreName")
+        val primaryGenreName = jsonObject.optString(Song.GENRE)
         val trackCount = jsonObject.optInt("trackCount")
         val trackTimeMillis = jsonObject.optInt("trackTimeMillis")
         val artworkUrl100 = jsonObject.optString("artworkUrl100")
         val trackViewUrl = jsonObject.optString("trackViewUrl")
-        val release_timestamp = jsonObject.optInt("release_timestamp")
+        val release_timestamp = jsonObject.optInt(Song.RELEASE)
         movie = Song(trackName, artistName, collectionName, trackPrice,
                 trackNumber, primaryGenreName, trackCount, trackTimeMillis,
-                artworkUrl100, trackViewUrl, release_timestamp)
+                artworkUrl100, trackViewUrl, release_timestamp, jsonObject)
     }
     return movie
 }

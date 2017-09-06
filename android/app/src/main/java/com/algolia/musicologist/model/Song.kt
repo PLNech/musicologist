@@ -23,6 +23,8 @@
 
 package com.algolia.musicologist.model
 
+import org.json.JSONObject
+
 /**
  * A song object from the data model.
  */
@@ -36,13 +38,14 @@ data class Song(val trackName: String,
                 val trackTimeMillis: Int,
                 val artworkUrl100: String,
                 val trackViewUrl: String,
-                val release_timestamp: Int) {
+                val release_timestamp: Int,
+                val json: JSONObject) {
 
     companion object {
         val TITLE = "trackName"
         val ARTIST = "artistName"
         val ALBUM = "collectionName"
         val RELEASE = "release_timestamp"
-        val HIGHLIGHT_ATTRIBUTES = listOf(Song.TITLE, Song.ARTIST)
+        val GENRE = "primaryGenreName"
     }
 }
