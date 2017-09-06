@@ -63,18 +63,21 @@ internal class SongAdapter(context: Context, resource: Int) : ArrayAdapter<Highl
         cell.track.text = "%d/%d".format(result.song.trackNumber, result.song.trackCount)
         cell.release.setTimestamp(result.song)
         cell.onClick {
-            this@SongAdapter.context.toast("Cell %d: %s (%s).".format(position, cell.title.text, cell.title.text))
-            val intent = Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH)
-            intent.putExtra(MediaStore.EXTRA_MEDIA_FOCUS, MediaStore.Audio.Media.ENTRY_CONTENT_TYPE)
-                    .putExtra(MediaStore.EXTRA_MEDIA_ARTIST, result[Song.ARTIST].highlightedValue)
-                    .putExtra(MediaStore.EXTRA_MEDIA_TITLE, result[Song.TITLE].highlightedValue)
-                    .putExtra(SearchManager.QUERY, result[Song.TITLE].highlightedValue)
-            if (intent.resolveActivity(this@SongAdapter.context.packageManager) != null) {
-                this@SongAdapter.context.startActivity(intent)
-            }
-
+            this@SongAdapter.context.toast("Playing song %d: %s.".format(position, cell.title.text))
+            playSong(result)
         }
         return cell
+    }
+
+    private fun playSong(result: HighlightedSong) {
+        val intent = Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH)
+        intent.putExtra(MediaStore.EXTRA_MEDIA_FOCUS, MediaStore.Audio.Media.ENTRY_CONTENT_TYPE)
+                .putExtra(MediaStore.EXTRA_MEDIA_ARTIST, result[Song.ARTIST].highlightedValue)
+                .putExtra(MediaStore.EXTRA_MEDIA_TITLE, result[Song.TITLE].highlightedValue)
+                .putExtra(SearchManager.QUERY, result[Song.TITLE].highlightedValue)
+        if (intent.resolveActivity(this@SongAdapter.context.packageManager) != null) {
+            this@SongAdapter.context.startActivity(intent)
+        }
     }
 
     override fun addAll(items: Collection<HighlightedSong>?) {
