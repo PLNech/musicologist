@@ -92,11 +92,12 @@ internal class SongAdapter(context: Context, resource: Int) : ArrayAdapter<Highl
                 // Append highlighted text.
                 val highlightString = matcher.group(1)
                 result.append(highlightString)
+                val highlightColor = R.color.colorHighlight
                 val color = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    context.resources.getColor(R.color.colorAccent, context.theme)
+                    context.resources.getColor(highlightColor, context.theme)
                 } else {
                     @Suppress("DEPRECATION")
-                    context.resources.getColor(R.color.colorAccent)
+                    context.resources.getColor(highlightColor)
                 }
                 result.setSpan(BackgroundColorSpan(color), q, q + highlightString.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 q += highlightString.length
