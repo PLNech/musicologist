@@ -46,6 +46,7 @@ class HighlightedSong(val song: Song) {
     operator fun get(attribute: String): Highlight = highlights[attribute] ?: Highlight(attribute, song.json.getString(attribute))
 
     fun play(context: Context) {
+        //FIXME Artist not sent to Spotify
         val intent = Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH)
         intent.putExtra(MediaStore.EXTRA_MEDIA_FOCUS, MediaStore.Audio.Media.ENTRY_CONTENT_TYPE)
                 .putExtra(MediaStore.EXTRA_MEDIA_ARTIST, this[Song.ARTIST].highlightedValue)
