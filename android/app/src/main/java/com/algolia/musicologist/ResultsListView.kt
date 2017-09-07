@@ -9,11 +9,15 @@ import com.algolia.instantsearch.model.SearchResults
 import com.algolia.musicologist.ui.SongAdapter
 import com.algolia.search.saas.AlgoliaException
 import com.algolia.search.saas.Query
+import java.util.*
 
 class ResultsListView(context: Context, attrs: AttributeSet) : ListView(context, attrs),
         AlgoliaResultsListener, AlgoliaErrorListener {
     private val adapter: SongAdapter = SongAdapter(context, R.layout.cell_song)
     private val resultsParser = SearchResultsParser()
+    private val random : Random by lazy {
+        Random()
+    }
 
     init {
         setAdapter(adapter)
@@ -30,6 +34,21 @@ class ResultsListView(context: Context, attrs: AttributeSet) : ListView(context,
             val resultList = resultsParser.parseResults(results.content)
             adapter.addAll(resultList)
         }
+    }
+
+    /**
+     * @param position: Position in the list (starting at 1)
+     */
+    fun playSong(position: Int) {
+        adapter.getItem(position - 1).play(context)
+    }
+
+    fun playLastSong() {
+        adapter.getItem(count - 1).play(context)
+    }
+
+    fun playRandomSong() {
+        adapter.getItem(random.nextInt(count)).play(context)
     }
 
     override fun onError(query: Query, error: AlgoliaException) {}

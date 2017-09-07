@@ -1,10 +1,7 @@
 package com.algolia.musicologist.ui
 
-import android.app.SearchManager
 import android.content.Context
-import android.content.Intent
 import android.os.Build
-import android.provider.MediaStore
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -64,20 +61,9 @@ internal class SongAdapter(context: Context, resource: Int) : ArrayAdapter<Highl
         cell.release.setTimestamp(result.song)
         cell.onClick {
             this@SongAdapter.context.toast("Playing song %d: %s.".format(position, cell.title.text))
-            playSong(result)
+            result.play(this@SongAdapter.context)
         }
         return cell
-    }
-
-    private fun playSong(result: HighlightedSong) {
-        val intent = Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH)
-        intent.putExtra(MediaStore.EXTRA_MEDIA_FOCUS, MediaStore.Audio.Media.ENTRY_CONTENT_TYPE)
-                .putExtra(MediaStore.EXTRA_MEDIA_ARTIST, result[Song.ARTIST].highlightedValue)
-                .putExtra(MediaStore.EXTRA_MEDIA_TITLE, result[Song.TITLE].highlightedValue)
-                .putExtra(SearchManager.QUERY, result[Song.TITLE].highlightedValue)
-        if (intent.resolveActivity(this@SongAdapter.context.packageManager) != null) {
-            this@SongAdapter.context.startActivity(intent)
-        }
     }
 
     override fun addAll(items: Collection<HighlightedSong>?) {
