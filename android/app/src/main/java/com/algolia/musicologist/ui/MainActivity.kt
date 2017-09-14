@@ -146,7 +146,7 @@ class MainActivity : VoiceActivity(), AnkoLogger {
         // Say speech response
         val message: String = response.result.fulfillment.messages
                 ?.filter { it -> (it as ResponseMessage.ResponseSpeech).speech?.size != 0 }
-                ?.joinToString { it -> (it as ResponseMessage.ResponseSpeech).speech.joinToString("\n") }
+                ?.joinToString(" ") { it -> (it as ResponseMessage.ResponseSpeech).speech.joinToString("\n") }
                 ?: response.result.fulfillment.speech
         say(message, delay = 500)
 
