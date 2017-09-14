@@ -6,6 +6,7 @@ import android.widget.ListView
 import com.algolia.instantsearch.model.AlgoliaErrorListener
 import com.algolia.instantsearch.model.AlgoliaResultsListener
 import com.algolia.instantsearch.model.SearchResults
+import com.algolia.musicologist.model.SearchResultsParser
 import com.algolia.musicologist.ui.SongAdapter
 import com.algolia.search.saas.AlgoliaException
 import com.algolia.search.saas.Query

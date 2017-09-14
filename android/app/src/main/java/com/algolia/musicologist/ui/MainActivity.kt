@@ -19,7 +19,6 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.util.Log
-import android.view.Menu
 import android.widget.EditText
 import com.algolia.instantsearch.helpers.InstantSearch
 import com.algolia.instantsearch.helpers.Searcher
@@ -53,12 +52,11 @@ class MainActivity : VoiceActivity(), AnkoLogger {
         setSupportActionBar(find(R.id.toolbar))
 
         textToSpeech = TextToSpeech(this, null)
-
         wakeupBackend()
         requestAudioPermission()
         configureApiAI()
         searcher = Searcher.create(Client("TDNMRH8LS3", "ec222292c9b89b658fe00b34ff341194").getIndex("songs"))
-        hits = find<ResultsListView>(R.id.hits)
+        hits = find(R.id.hits)
         instantSearch = InstantSearch(hits, searcher)
 
         (findViewById(R.id.fab) as FloatingActionButton).setOnClickListener {
@@ -86,20 +84,6 @@ class MainActivity : VoiceActivity(), AnkoLogger {
         super.onDestroy()
         textToSpeech.stop()
         textToSpeech.shutdown()
-    }
-
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        val id = item.itemId
-//        when (id) {
-//            R.id.action_settings -> return true
-//        }
-//        return super.onOptionsItemSelected(item)
-//    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
     }
 
     private fun configureApiAI() {

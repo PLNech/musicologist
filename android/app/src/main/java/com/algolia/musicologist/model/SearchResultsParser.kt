@@ -21,10 +21,8 @@
  * THE SOFTWARE.
  */
 
-package com.algolia.musicologist
+package com.algolia.musicologist.model
 
-import com.algolia.musicologist.model.HighlightedSong
-import com.algolia.musicologist.model.Song
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*
