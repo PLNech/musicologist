@@ -8,7 +8,9 @@ import ai.api.model.ResponseMessage
 import ai.api.ui.AIButton
 import android.Manifest
 import android.app.AlertDialog
+import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -17,8 +19,12 @@ import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v4.media.session.MediaControllerCompat
+import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import android.text.TextUtils
 import android.util.Log
+import android.view.KeyEvent
 import android.widget.EditText
 import com.algolia.instantsearch.helpers.InstantSearch
 import com.algolia.instantsearch.helpers.Searcher
@@ -45,6 +51,7 @@ class MainActivity : VoiceActivity(), AnkoLogger {
     private lateinit var instantSearch: InstantSearch
     private lateinit var searcher: Searcher
     private lateinit var hits: ResultsListView
+    private lateinit var mediaController: MediaControllerCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,8 +70,67 @@ class MainActivity : VoiceActivity(), AnkoLogger {
             testRequest()
         }
 
-        testRequest() // TODO: Remove (debugging purposes)
+        setupMediaButtons()
+
+        // TODO: Remove (debugging purposes)
+        val request = AIRequest("What do you know about love?")
+        request.resetContexts = true
+        Thread({
+            micButton.onResult(micButton.textRequest(request))
+        }).start()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        textToSpeech.stop()
+        textToSpeech.shutdown()
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return super.onKeyDown(keyCode, event)
+        }
+        return when (keyCode) {
+            KeyEvent.KEYCODE_MEDIA_PLAY, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE -> {
+                mediaController.dispatchMediaButtonEvent(event)
+                true
+            }
+            else -> super.onKeyDown(keyCode, event)
+        }
+    }
+
+    private fun setupMediaButtons() {
+        // Media setup
+        val mediaSession = MediaSessionCompat(this, application.packageName)
+        mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS)
+        mediaSession.setPlaybackState(PlaybackStateCompat.Builder()
+                .build()
+        )
+        mediaSession.setCallback(object : MediaSessionCompat.Callback() {
+            override fun onMediaButtonEvent(mediaButtonEvent: Intent?): Boolean {
+                toast("Media button event")
+                val action: KeyEvent? = mediaButtonEvent?.getParcelableExtra(Intent.EXTRA_KEY_EVENT)
+                if (action?.action?.equals(KeyEvent.ACTION_DOWN) != false) {
+                    when (action?.keyCode) {
+                        KeyEvent.KEYCODE_MEDIA_PLAY,
+                        KeyEvent.KEYCODE_MEDIA_PAUSE,
+                        KeyEvent.KEYCODE_MEDIA_NEXT,
+                        KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE -> {
+                            toast("listening!")
+                            textToSpeech.stop()
+                            micButton.onListeningCanceled()
+                            micButton.performClick()
+                            return true
+                        }
+                    }
+                }
+                return super.onMediaButtonEvent(mediaButtonEvent)
+            }
+        })
+        mediaController = MediaControllerCompat(this, mediaSession)
+        MediaControllerCompat.setMediaController(this, mediaController)
+    }
+
 
     private fun testRequest() {
         val editText = EditText(this)
@@ -76,14 +142,8 @@ class MainActivity : VoiceActivity(), AnkoLogger {
                     Thread({
                         micButton.onResult(micButton.textRequest(request))
                     }).start()
-                }.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel()}
+                }.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
                 .show()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        textToSpeech.stop()
-        textToSpeech.shutdown()
     }
 
     private fun configureApiAI() {
