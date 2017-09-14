@@ -51,7 +51,7 @@ data class Song(val trackName: String,
         val ALBUM = "collectionName"
         val RELEASE = "release_timestamp"
         val GENRE = "primaryGenreName"
-        val HIGHLIGHT_ATTRIBUTES = listOf(Song.TITLE, Song.ARTIST, Song.ALBUM)
+        val HIGHLIGHT_ATTRIBUTES = listOf(TITLE, ARTIST, ALBUM, GENRE)
     }
 
     fun play(context: Context) {

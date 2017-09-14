@@ -27,11 +27,11 @@ THE SOFTWARE.
 
     <ImageView
         android:id="@+id/preview"
-        android:layout_width="60dip"
-        android:layout_height="60dip"
+        android:layout_width="70dip"
+        android:layout_height="70dip"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        />
+        android:contentDescription="Song thumbnail"/>
 
     <TextView
         android:id="@+id/title"
@@ -40,59 +40,81 @@ THE SOFTWARE.
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/preview"
-        android:paddingStart="6dip"
         android:paddingEnd="6dip"
+        android:paddingStart="6dip"
         android:paddingTop="6dip"
-        android:text="title"/>
+        android:text="title"
+        android:textAlignment="center"/>
 
     <TextView
         android:id="@+id/artist"
         style="@style/SongArtist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@id/title"
-        android:layout_below="@id/title"
-        android:layout_toEndOf="@+id/preview"
-        android:padding="6dip"
+        android:layout_below="@+id/title"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:maxWidth="250dp"
+        android:paddingStart="6dip"
+        android:paddingEnd="6dip"
         android:text="artist"
-        android:textStyle="italic"/>
+        android:textAlignment="textStart"
+        android:textStyle="italic"
+        android:layout_toEndOf="@+id/preview"/>
 
     <TextView
         android:id="@+id/album"
-        android:textSize="14sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title"
-        android:layout_toEndOf="@+id/artist"
-        android:padding="6dip"
-        android:layout_marginStart="6sp"
+        android:layout_alignBottom="@+id/artist"
+        android:layout_below="@+id/release"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:maxWidth="200dp"
+        android:paddingStart="6dip"
+        android:paddingEnd="6dip"
         android:text="album"
-        android:textStyle="italic"/>
+        android:textAlignment="center"
+        android:textSize="14sp"
+        android:textStyle="italic"
+        android:layout_alignParentEnd="true"/>
 
     <TextView
         android:id="@+id/track"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/album"
-        android:layout_alignBottom="@+id/album"
-        android:layout_toEndOf="@+id/album"
-        android:padding="6dip"
+        android:layout_alignEnd="@+id/release"
+        android:layout_below="@+id/album"
+        android:paddingStart="6dip"
+        android:paddingEnd="6dip"
         android:text="1/42"
+        android:textAlignment="center"
         android:textSize="14sp"
         android:textStyle="italic"/>
+
+    <TextView
+        android:id="@+id/genre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/artist"
+        android:layout_below="@+id/artist"
+        android:paddingStart="6dip"
+        android:paddingEnd="6dip"
+        android:layout_alignBottom="@id/track"
+        android:text="Jazz"
+        android:textAlignment="center"
+        android:textSize="14sp"
+        android:textStyle="bold"/>
 
     <com.algolia.musicologist.ui.TimestampHitView
         android:id="@+id/release"
         style="@style/SongRelease"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/title"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_centerVertical="true"
-        android:layout_toStartOf="@id/title"
-        android:padding="6dip"
-        android:text="1993"
-        />
+        android:paddingStart="6dip"
+        android:paddingTop="6dip"
+        android:paddingEnd="6dip"
+        android:text="10 years ago"/>
 </RelativeLayout>
