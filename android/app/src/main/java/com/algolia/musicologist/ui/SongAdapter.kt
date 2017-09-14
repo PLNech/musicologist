@@ -61,7 +61,7 @@ internal class SongAdapter(context: Context, resource: Int) : ArrayAdapter<Highl
         cell.release.setTimestamp(result.song)
         cell.onClick {
             this@SongAdapter.context.toast("Playing song %d: %s.".format(position, cell.title.text))
-            result.play(this@SongAdapter.context)
+            result.song.play(this@SongAdapter.context)
         }
         return cell
     }

@@ -40,15 +40,15 @@ class ResultsListView(context: Context, attrs: AttributeSet) : ListView(context,
      * @param position: Position in the list (starting at 1)
      */
     fun playSong(position: Int) {
-        adapter.getItem(position - 1).play(context)
+        adapter.getItem(position - 1).song.play(context)
     }
 
     fun playLastSong() {
-        adapter.getItem(count - 1).play(context)
+        adapter.getItem(count - 1).song.play(context)
     }
 
     fun playRandomSong() {
-        adapter.getItem(random.nextInt(count)).play(context)
+        adapter.getItem(random.nextInt(count)).song.play(context)
     }
 
     override fun onError(query: Query, error: AlgoliaException) {}

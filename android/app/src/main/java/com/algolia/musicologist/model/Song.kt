@@ -23,6 +23,10 @@
 
 package com.algolia.musicologist.model
 
+import android.app.SearchManager
+import android.content.Context
+import android.content.Intent
+import android.provider.MediaStore
 import org.json.JSONObject
 
 /**
@@ -48,5 +52,16 @@ data class Song(val trackName: String,
         val RELEASE = "release_timestamp"
         val GENRE = "primaryGenreName"
         val HIGHLIGHT_ATTRIBUTES = listOf(Song.TITLE, Song.ARTIST, Song.ALBUM)
+    }
+
+    fun play(context: Context) {
+        val intent = Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH)
+        intent.putExtra(MediaStore.EXTRA_MEDIA_FOCUS, MediaStore.Audio.Media.ENTRY_CONTENT_TYPE)
+                .putExtra(MediaStore.EXTRA_MEDIA_ARTIST, artistName)
+                .putExtra(MediaStore.EXTRA_MEDIA_TITLE, trackName)
+                .putExtra(SearchManager.QUERY, "$trackName $artistName")
+        if (intent.resolveActivity(context.packageManager) != null) {
+            context.startActivity(intent)
+        }
     }
 }
