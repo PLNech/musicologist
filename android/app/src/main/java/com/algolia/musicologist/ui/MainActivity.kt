@@ -124,8 +124,8 @@ class MainActivity : VoiceActivity(), AnkoLogger {
 
             override fun onError(error: AIError) {
                 runOnUiThread {
-                    Log.e("ApiAi", "Error: " + error)
-                    say("Error: " + error, Snackbar.LENGTH_LONG)
+                    Log.e("ApiAi", "Error: $error.")
+                    say("$error.", Snackbar.LENGTH_LONG)
                 }
             }
 
@@ -226,9 +226,9 @@ class MainActivity : VoiceActivity(), AnkoLogger {
     private fun wakeupBackend() {
         Volley.newRequestQueue(this).add(StringRequest(Request.Method.GET,
                 "http://musicologist-backend.herokuapp.com/wakeup", Response.Listener {}, Response.ErrorListener { error ->
-            error("Backend seems down: " + error)
+            error("Backend seems down: $error.")
             val speech = "Oh oh... It seems my backend is down... I don't know music anymore..."
-            say(speech, speech + " :'(", 500)
+            say(speech, "$speech :'(", 500)
         }))
     }
 
