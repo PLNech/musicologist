@@ -150,14 +150,14 @@ class MainActivity : VoiceActivity(), AnkoLogger {
                 ?: response.result.fulfillment.speech
         say(message, delay = 500)
 
-        when (response.result.action) {
-            "" -> {
+        when (response.result.metadata.intentName) {
+            "Results" -> {
                 // Response used the webhook, let's present the results
                 response.result.getComplexParameter("data")?.let { it ->
                     searcher.forwardBackendSearchResult(JSONObject(it.toString()))
                 }
             }
-            "Results.Results-selectnumber" -> {
+            "Results - select.number" -> {
                 val position = response.result.getIntParameter("position")
                 if (position != 0) {
                     hits.playSong(position)
