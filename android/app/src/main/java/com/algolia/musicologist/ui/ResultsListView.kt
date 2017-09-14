@@ -15,7 +15,7 @@ class ResultsListView(context: Context, attrs: AttributeSet) : ListView(context,
         AlgoliaResultsListener, AlgoliaErrorListener {
     private val adapter: SongAdapter = SongAdapter(context, R.layout.cell_song)
     private val resultsParser = SearchResultsParser()
-    private val random : Random by lazy {
+    private val random: Random by lazy {
         Random()
     }
 
