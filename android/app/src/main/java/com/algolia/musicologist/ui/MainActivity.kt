@@ -7,6 +7,7 @@ import ai.api.model.AIResponse
 import ai.api.model.ResponseMessage
 import ai.api.ui.AIButton
 import android.Manifest
+import android.app.AlertDialog
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
 import android.os.Handler
@@ -19,7 +20,7 @@ import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
-import android.widget.Toast
+import android.widget.EditText
 import com.algolia.instantsearch.helpers.InstantSearch
 import com.algolia.instantsearch.helpers.Searcher
 import com.algolia.musicologist.R
@@ -34,6 +35,7 @@ import kotlinx.android.synthetic.main.content_main.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.find
+import org.jetbrains.anko.toast
 import org.json.JSONObject
 
 
@@ -67,12 +69,17 @@ class MainActivity : VoiceActivity(), AnkoLogger {
     }
 
     private fun testRequest() {
-        Toast.makeText(this, "TextRequest: Led Zep.", Toast.LENGTH_SHORT).show()
-        val request = AIRequest("Do you know Led Zep songs?")
-        request.resetContexts = true
-        Thread({
-            micButton.onResult(micButton.textRequest(request))
-        }).start()
+        val editText = EditText(this)
+        AlertDialog.Builder(this).setView(editText)
+                .setPositiveButton("Go") { _, _ ->
+                    this@MainActivity.toast("TextRequest: ${editText.text}.")
+                    val request = AIRequest(editText.text.toString())
+                    request.resetContexts = true
+                    Thread({
+                        micButton.onResult(micButton.textRequest(request))
+                    }).start()
+                }.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel()}
+                .show()
     }
 
     override fun onDestroy() {
