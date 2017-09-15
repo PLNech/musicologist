@@ -216,6 +216,7 @@ class MainActivity : VoiceActivity(), AnkoLogger {
                     }
                 }
             }
+            "Default Fallback Intent" -> {}
             else -> say("I'm sorry, I didn't understand my backend... Please report this bug \uD83D\uDE25")
         }
 
