@@ -2,20 +2,16 @@ package com.algolia.musicologist.ui
 
 import ai.api.android.AIConfiguration
 import ai.api.model.AIError
-import ai.api.model.AIRequest
 import ai.api.model.AIResponse
 import ai.api.model.ResponseMessage
 import ai.api.ui.AIButton
 import android.Manifest
-import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.speech.tts.TextToSpeech
-import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -23,11 +19,10 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.text.TextUtils
-import android.util.Log
 import android.view.KeyEvent
-import android.widget.EditText
 import com.algolia.instantsearch.helpers.InstantSearch
 import com.algolia.instantsearch.helpers.Searcher
+import com.algolia.musicologist.Agent
 import com.algolia.musicologist.R
 import com.algolia.musicologist.ResultsListView
 import com.algolia.search.saas.Client
@@ -35,7 +30,6 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.vdurmont.emoji.EmojiParser
 import kotlinx.android.synthetic.main.content_main.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
@@ -47,7 +41,8 @@ import org.json.JSONObject
 class MainActivity : VoiceActivity(), AnkoLogger {
 
     private val handler = Handler(Looper.getMainLooper())
-    private lateinit var textToSpeech: TextToSpeech
+
+    private lateinit var agent: Agent
     private lateinit var instantSearch: InstantSearch
     private lateinit var searcher: Searcher
     private lateinit var hits: ResultsListView
@@ -58,10 +53,10 @@ class MainActivity : VoiceActivity(), AnkoLogger {
         setContentView(R.layout.activity_main)
         setSupportActionBar(find(R.id.toolbar))
 
-        textToSpeech = TextToSpeech(this, null)
         wakeupBackend()
         requestAudioPermission()
         configureApiAI()
+
         searcher = Searcher.create(Client("TDNMRH8LS3", "ec222292c9b89b658fe00b34ff341194").getIndex("songs"))
         hits = find(R.id.hits)
         instantSearch = InstantSearch(hits, searcher)
@@ -69,21 +64,14 @@ class MainActivity : VoiceActivity(), AnkoLogger {
         (findViewById(R.id.fab) as FloatingActionButton).setOnClickListener {
             testRequest()
         }
+        agent = Agent(this, handler, find(R.id.micButton))
 
         setupMediaButtons()
-
-        // TODO: Remove (debugging purposes)
-        val request = AIRequest("What do you know about love?")
-        request.resetContexts = true
-        Thread({
-            micButton.onResult(micButton.textRequest(request))
-        }).start()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        textToSpeech.stop()
-        textToSpeech.shutdown()
+        agent.shutDown()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -117,7 +105,7 @@ class MainActivity : VoiceActivity(), AnkoLogger {
                         KeyEvent.KEYCODE_MEDIA_NEXT,
                         KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE -> {
                             toast("listening!")
-                            textToSpeech.stop()
+                            agent.stopTalking()
                             micButton.onListeningCanceled()
                             micButton.performClick()
                             return true
@@ -132,27 +120,13 @@ class MainActivity : VoiceActivity(), AnkoLogger {
     }
 
 
-    private fun testRequest() {
-        val editText = EditText(this)
-        AlertDialog.Builder(this).setView(editText)
-                .setPositiveButton("Go") { _, _ ->
-                    this@MainActivity.toast("TextRequest: ${editText.text}.")
-                    val request = AIRequest(editText.text.toString())
-                    request.resetContexts = true
-                    Thread({
-                        micButton.onResult(micButton.textRequest(request))
-                    }).start()
-                }.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
-                .show()
-    }
-
     private fun configureApiAI() {
         micButton.initialize(AIConfiguration("b2a8a05cfbdb4162bbdfb9c2f4e48a4e",
                 ai.api.AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System))
         micButton.setPartialResultsListener { partialResults ->
             // If you're still talking, stop it TODO: Do it as soon as the button is pressed
-            textToSpeech.stop()
+            agent.stopTalking()
 
             val result = partialResults[0]
             if (!TextUtils.isEmpty(result)) {
@@ -161,22 +135,22 @@ class MainActivity : VoiceActivity(), AnkoLogger {
         }
         micButton.setResultsListener(object : AIButton.AIButtonListener {
             override fun onResult(response: AIResponse) {
-                runOnUiThread {
+                runOnUiThread{
                     handleResponse(response)
                 }
             }
 
             override fun onError(error: AIError) {
                 runOnUiThread {
-                    Log.e("ApiAi", "Error: $error.")
-                    say("$error.", Snackbar.LENGTH_LONG)
+                    error("Error: $error.")
+                    agent.say("$error.", Snackbar.LENGTH_LONG)
                 }
             }
 
             override fun onCancelled() {
                 runOnUiThread {
                     error("Cancelled.")
-                    say("Cancelled.", Snackbar.LENGTH_SHORT)
+                    agent.say("Cancelled.", Snackbar.LENGTH_SHORT)
                 }
             }
         })
@@ -192,7 +166,7 @@ class MainActivity : VoiceActivity(), AnkoLogger {
                 ?.filter { it -> (it as ResponseMessage.ResponseSpeech).speech?.size != 0 }
                 ?.joinToString(" ") { it -> (it as ResponseMessage.ResponseSpeech).speech.joinToString("\n") }
                 ?: response.result.fulfillment.speech
-        say(message, delay = 500)
+        agent.say(message, delay = 500)
 
         when (response.result.metadata.intentName) {
             "Results" -> {
@@ -216,8 +190,11 @@ class MainActivity : VoiceActivity(), AnkoLogger {
                     }
                 }
             }
-            "Default Fallback Intent" -> {}
-            else -> say("I'm sorry, I didn't understand my backend... Please report this bug \uD83D\uDE25")
+            "Default Fallback Intent", "Default Welcome Intent" -> {
+            }
+            else -> if (!response.result.action.startsWith("smalltalk")) {
+                agent.say("I'm sorry, I didn't understand my backend... Please report this bug \uD83D\uDE25")
+            }
         }
 
 
@@ -227,22 +204,11 @@ class MainActivity : VoiceActivity(), AnkoLogger {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == CODE_PERMISSION_REQUEST) {
             if (grantResults.isNotEmpty() && grantResults[0] == PERMISSION_GRANTED) {
-                say("Thanks! Looking forward to hearing your lovely voice.", duration = Snackbar.LENGTH_SHORT)
+                agent.say("Thanks! Looking forward to hearing your lovely voice.", duration = Snackbar.LENGTH_SHORT)
             } else {
                 requestAudioPermission()
             }
         }
-    }
-
-    private fun say(speech: String, duration: Int = Snackbar.LENGTH_INDEFINITE) {
-        say(speech, speech, duration, 0)
-    }
-
-    private fun say(speech: String, text: String? = null, duration: Int = Snackbar.LENGTH_INDEFINITE, delay: Long = 0) {
-        handler.postDelayed({
-            textToSpeech.speak(EmojiParser.removeAllEmojis(speech), TextToSpeech.QUEUE_FLUSH, null, null)
-            Snackbar.make(micButton, text ?: speech, duration).show()
-        }, delay)
     }
 
     private fun requestAudioPermission() {
@@ -253,7 +219,7 @@ class MainActivity : VoiceActivity(), AnkoLogger {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.RECORD_AUDIO)) {
 
-                say("I can only talk with you if you let me record audio.")
+                agent.say("I can only talk with you if you let me record audio.")
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
@@ -273,7 +239,7 @@ class MainActivity : VoiceActivity(), AnkoLogger {
                 "http://musicologist-backend.herokuapp.com/wakeup", Response.Listener {}, Response.ErrorListener { error ->
             error("Backend seems down: $error.")
             val speech = "Oh oh... It seems my backend is down... I don't know music anymore..."
-            say(speech, "$speech :'(", 500)
+            agent.say(speech, "$speech :'(", 500)
         }))
     }
 
