@@ -60,10 +60,6 @@ class MainActivity : VoiceActivity(), AnkoLogger {
         searcher = Searcher.create(Client("TDNMRH8LS3", "ec222292c9b89b658fe00b34ff341194").getIndex("songs"))
         hits = find(R.id.hits)
         instantSearch = InstantSearch(hits, searcher)
-
-        (findViewById(R.id.fab) as FloatingActionButton).setOnClickListener {
-            testRequest()
-        }
         agent = Agent(this, handler, find(R.id.micButton))
 
         setupMediaButtons()
