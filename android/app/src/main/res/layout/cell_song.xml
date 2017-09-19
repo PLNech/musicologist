@@ -59,7 +59,7 @@ THE SOFTWARE.
         android:paddingEnd="6dip"
         android:text="artist"
         android:textAlignment="textStart"
-        android:textStyle="italic"
+        android:textStyle="bold"
         android:layout_toEndOf="@+id/preview"/>
 
     <TextView
@@ -104,7 +104,7 @@ THE SOFTWARE.
         android:text="Jazz"
         android:textAlignment="center"
         android:textSize="14sp"
-        android:textStyle="bold"/>
+        android:textStyle="italic"/>
 
     <com.algolia.musicologist.ui.TimestampHitView
         android:id="@+id/release"
