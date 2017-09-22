@@ -1,32 +1,22 @@
-# Examples
+Musicologist is a research project exploring the intersection of conversational interfaces and search UIs.
+<img src="./screenshot.png" align="right"/>
 
-## Search
+# Features
+- Search for songs by artist or theme
+- Voice input, voice output
+- Rich search results UI
+
+# Examples
 - > Do you know songs by the rollin stun?
 - > Any music released by Eminim?  
-- > Find songs released in 1991  
-- > Do you know music from the seventies?  
-- > What tunes come from the 70s?  
-- > Give me the songs made by Eminem between 1960 and 2010  
-- > Find songs made by the Rolling Stones since 2000  
-- > Any new song since New Year's Eve 2000?     
+- > Do you know anything about love?
+- > Did you hear songs by Zeppelin?
+- > What do you know on California?
 
-# TODO
-
-improve dataset
-typo tolerance on artists?
-solve missing words in input.original
-solve "the 80s/the 70s" generalisation issue
-# FIXME
-
-- Do you know music from the seventies?
--> `Searching for songs [missing] the seventies`
-
-- What tunes come from the 80s?
--> `input.unknown`
-
-# Outline
-- Get user query
-- Send to API.AI for NLU
-- Parse response to get search parameters
-- Send to Algolia
-- Display results
+# Architecture
+- Mobile frontend in [`/android`](/android)
+  - Speech to text using a [`SpeechRecognizer`](https://developer.android.com/reference/android/speech/SpeechRecognizer.html)
+  - Results displayed with **[InstantSearch Android](https://community.algolia.com/instantsearch-android/)**
+  - Text to speech using the [TTS Engine](https://developer.android.com/reference/android/speech/tts/TextToSpeech.Engine.html)
+- API.AI [agent](agent.zip) for NLU
+- A [backend](/backend) connecting the agent to Algolia
