@@ -20,6 +20,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.text.TextUtils
 import android.view.KeyEvent
+import android.view.View
 import com.algolia.instantsearch.helpers.InstantSearch
 import com.algolia.instantsearch.helpers.Searcher
 import com.algolia.musicologist.Agent
@@ -30,6 +31,7 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
@@ -39,6 +41,7 @@ import org.json.JSONObject
 
 
 class MainActivity : VoiceActivity(), AnkoLogger {
+    private val DEBUG = true;
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -63,6 +66,14 @@ class MainActivity : VoiceActivity(), AnkoLogger {
         agent = Agent(this, handler, find(R.id.micButton))
 
         setupMediaButtons()
+
+        DEBUG.let {
+            fab.visibility = View.VISIBLE
+            fab.setOnClickListener {
+                toast("TextRequest: Love.")
+                searcher.search("Love")
+            }
+        }
     }
 
     override fun onDestroy() {
