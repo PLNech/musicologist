@@ -23,9 +23,9 @@ import android.view.KeyEvent
 import android.view.View
 import com.algolia.instantsearch.helpers.InstantSearch
 import com.algolia.instantsearch.helpers.Searcher
+import com.algolia.instantsearch.ui.views.Hits
 import com.algolia.musicologist.Agent
 import com.algolia.musicologist.R
-import com.algolia.musicologist.ResultsListView
 import com.algolia.search.saas.Client
 import com.android.volley.Request
 import com.android.volley.Response
@@ -48,7 +48,7 @@ class MainActivity : VoiceActivity(), AnkoLogger {
     private lateinit var agent: Agent
     private lateinit var instantSearch: InstantSearch
     private lateinit var searcher: Searcher
-    private lateinit var hits: ResultsListView
+    private lateinit var hits: Hits
     private lateinit var mediaController: MediaControllerCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -142,7 +142,7 @@ class MainActivity : VoiceActivity(), AnkoLogger {
         }
         micButton.setResultsListener(object : AIButton.AIButtonListener {
             override fun onResult(response: AIResponse) {
-                runOnUiThread{
+                runOnUiThread {
                     handleResponse(response)
                 }
             }
@@ -184,18 +184,19 @@ class MainActivity : VoiceActivity(), AnkoLogger {
             }
             "Results - select.number" -> {
                 val position = response.result.getIntParameter("position")
-                if (position != 0) {
-                    hits.playSong(position)
-                } else {
-                    val rank = response.result.getStringParameter("rank")
-                    rank?.let {
-                        when (rank) {
-                            "first" -> hits.playSong(0)
-                            "last" -> hits.playLastSong()
-                            else -> hits.playRandomSong()
-                        }
-                    }
-                }
+//              TODO Migrate to work with actual Hits widget
+//                if (position != 0) {
+//                    hits.playSong(position)
+//                } else {
+//                    val rank = response.result.getStringParameter("rank")
+//                    rank?.let {
+//                        when (rank) {
+//                            "first" -> hits.playSong(0)
+//                            "last" -> hits.playLastSong()
+//                            else -> hits.playRandomSong()
+//                        }
+//                    }
+//                }
             }
             "Default Fallback Intent", "Default Welcome Intent" -> {
             }
