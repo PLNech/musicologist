@@ -27,4 +27,4 @@ Musicologist is a research project exploring the intersection of conversational 
   - Results displayed with **[InstantSearch Android](https://community.algolia.com/instantsearch-android/)**
   - Text to speech using the [TTS Engine](https://developer.android.com/reference/android/speech/tts/TextToSpeech.Engine.html)
 - API.AI [agent](agent.zip) for NLU
-- A [backend](/backend) connecting the agent to Algolia
+- A [backend](https://github.com/PLNech/musicologist-backend/) connecting the agent to Algolia
