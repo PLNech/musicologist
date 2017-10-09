@@ -45,14 +45,21 @@ THE SOFTWARE.
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/preview"
+            android:maxLines="2"
+            android:maxWidth="250dp"
             android:paddingEnd="6dip"
             android:paddingStart="6dip"
             android:paddingTop="6dip"
             android:text="title"
-            android:textAlignment="center"
+            android:textAlignment="textStart"
             algolia:attribute='@{"trackName"}'
-            algolia:highlighted="true"/>
+            algolia:highlighted="@{true}"/>
+<!-- TODO DEBUG
 
+            algolia:attribute='@{"trackName"}'
+            algolia:highlightingColor="@{@color/colorAccent}"/>
+            -> You need an algolia:attribute to use algolia:highlightingColor.
+-->
         <TextView
             android:id="@+id/artist"
             style="@style/SongArtist"
@@ -79,15 +86,16 @@ THE SOFTWARE.
             android:layout_alignParentEnd="true"
             android:layout_below="@+id/release"
             android:ellipsize="end"
-            android:maxLines="1"
-            android:maxWidth="200dp"
+            android:maxLines="2"
+            android:maxWidth="150dp"
             android:paddingEnd="6dip"
             android:paddingStart="6dip"
             android:text="album"
-            android:textAlignment="center"
+            android:textAlignment="textEnd"
             android:textSize="14sp"
             android:textStyle="italic"
-            algolia:highlighted="true"/>
+            algolia:attribute='@{"collectionName"}'
+            algolia:highlighted="@{true}"/>
 
         <!-- TODO: Track count view -->
         <TextView
@@ -99,7 +107,7 @@ THE SOFTWARE.
             android:paddingEnd="6dip"
             android:paddingStart="6dip"
             android:text="1/42"
-            android:textAlignment="center"
+            android:textAlignment="textEnd"
             android:textSize="14sp"
             android:textStyle="italic"/>
 
@@ -113,10 +121,12 @@ THE SOFTWARE.
             android:paddingEnd="6dip"
             android:paddingStart="6dip"
             android:text="Jazz"
-            android:textAlignment="center"
+            android:textAlignment="textStart"
             android:textSize="14sp"
             android:textStyle="italic"
-            algolia:attribute='@{"primaryGenreName"}'/>
+            algolia:attribute='@{"primaryGenreName"}'
+            algolia:highlighted="@{true}"/>
+
 
         <!-- TODO: Timestamp count view -->
         <com.algolia.musicologist.ui.TimestampHitView
