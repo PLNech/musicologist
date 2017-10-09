@@ -16,6 +16,9 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+        all {
+            buildConfigField "String", "AUTH_TOKEN", "\"$System.env.MUSICOLOGIST_AUTH_TOKEN\""
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
