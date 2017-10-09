@@ -28,7 +28,6 @@ import com.algolia.musicologist.Agent
 import com.algolia.musicologist.BuildConfig
 import com.algolia.musicologist.R
 import com.algolia.search.saas.Client
-import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -244,15 +243,19 @@ class MainActivity : VoiceActivity(), AnkoLogger {
     }
 
     private fun wakeupBackend() {
-        Volley.newRequestQueue(this).add(object : StringRequest(Request.Method.GET,
+        Volley.newRequestQueue(this).add(object : StringRequest(Method.GET,
                 "http://musicologist-backend.herokuapp.com/wakeup", Response.Listener {}, Response.ErrorListener { error ->
             error("Backend seems down: $error.")
             val speech = "Oh oh... It seems my backend is down... I don't know music anymore..."
             agent.say(speech, "$speech :'(", 500)
         }) {
+            var didInitHeaders = false
             override fun getHeaders(): MutableMap<String, String> {
                 val headers = super.getHeaders()
-                headers.put("Authorization:", "Bearer " + BuildConfig.AUTH_TOKEN)
+                if (!didInitHeaders) {
+                    headers.put("Authorization", "Bearer " + BuildConfig.AUTH_TOKEN)
+                    didInitHeaders = true
+                }
                 return headers
             }
         })
