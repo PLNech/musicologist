@@ -1,8 +1,11 @@
 Musicologist is a research project exploring the intersection of conversational interfaces and search UIs.
-<br />
-<img src="./screenshot.png" align="right"/>
 
 # [Presentation on Algolia's forum](https://discourse.algolia.com/t/the-musicologist-search-as-a-conversation/2928/5)
+
+# Demo
+[![Musicologist demo on YouTube](https://img.youtube.com/vi/n2UOctORN_M/0.jpg)](https://www.youtube.com/watch?v=n2UOctORN_M)
+
+
 
 
 # Features
@@ -10,12 +13,15 @@ Musicologist is a research project exploring the intersection of conversational 
 - Voice input, voice output
 - Rich search results UI
 
+<img src="./screenshot.png" align="right" width="300"/>
+
 # Examples
 - > Do you know songs by the rollin stun?
 - > Any music released by Eminim?  
 - > Do you know anything about love?
 - > Did you hear songs by Zeppelin?
 - > What do you know on California?
+<img src="./screenshot.png" align="right" width="300"/>
 
 # Getting started
 - Git clone or download the code
