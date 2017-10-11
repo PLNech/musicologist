@@ -13,8 +13,6 @@ Musicologist is a research project exploring the intersection of conversational 
 - Voice input, voice output
 - Rich search results UI
 
-<img src="./screenshot.png" align="right" width="300"/>
-
 # Examples
 - > Do you know songs by the rollin stun?
 - > Any music released by Eminim?  
