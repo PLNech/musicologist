@@ -1,4 +1,4 @@
-Musicologist is a research project exploring the intersection of conversational interfaces and search UIs.
+Musicologist is an Android app using Algolia to give music advice through conversation.
 
 # [Presentation on Algolia's forum](https://discourse.algolia.com/t/the-musicologist-search-as-a-conversation/2928/5)
 
