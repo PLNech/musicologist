@@ -7,7 +7,7 @@ import android.speech.tts.TextToSpeech
 import android.support.design.widget.Snackbar
 import com.vdurmont.emoji.EmojiParser
 
-class Agent(var context: Context, var handler: Handler, var button: AIButton) {
+class Agent(context: Context, private var handler: Handler, private var button: AIButton) {
     private val textToSpeech = TextToSpeech(context, null)
 
     fun say(speech: String, duration: Int = Snackbar.LENGTH_INDEFINITE) {
