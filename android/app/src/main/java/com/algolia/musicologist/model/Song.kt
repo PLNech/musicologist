@@ -52,6 +52,27 @@ data class Song(val trackName: String,
         val RELEASE = "release_timestamp"
         val GENRE = "primaryGenreName"
         val HIGHLIGHT_ATTRIBUTES = listOf(TITLE, ARTIST, ALBUM, GENRE)
+
+        fun fromJSON(jsonObject: JSONObject?): Song? {
+            var song: Song? = null
+            jsonObject?.let {
+                val trackName = jsonObject.optString(Song.TITLE)
+                val artistName = jsonObject.optString(Song.ARTIST)
+                val collectionName = jsonObject.optString(Song.ALBUM)
+                val trackPrice = jsonObject.optDouble("trackPrice")
+                val trackNumber = jsonObject.optInt("trackNumber")
+                val primaryGenreName = jsonObject.optString(Song.GENRE)
+                val trackCount = jsonObject.optInt("trackCount")
+                val trackTimeMillis = jsonObject.optInt("trackTimeMillis")
+                val artworkUrl100 = jsonObject.optString("artworkUrl100")
+                val trackViewUrl = jsonObject.optString("trackViewUrl")
+                val release_timestamp = jsonObject.optInt(Song.RELEASE)
+                song = Song(trackName, artistName, collectionName, trackPrice,
+                        trackNumber, primaryGenreName, trackCount, trackTimeMillis,
+                        artworkUrl100, trackViewUrl, release_timestamp, jsonObject)
+            }
+            return song
+        }
     }
 
     fun play(context: Context) {
@@ -64,4 +85,6 @@ data class Song(val trackName: String,
             context.startActivity(intent)
         }
     }
+
+
 }
