@@ -23,10 +23,11 @@ import android.view.KeyEvent
 import android.view.View
 import com.algolia.instantsearch.helpers.InstantSearch
 import com.algolia.instantsearch.helpers.Searcher
-import com.algolia.instantsearch.ui.views.Hits
+import com.algolia.instantsearch.utils.ItemClickSupport
 import com.algolia.musicologist.Agent
 import com.algolia.musicologist.BuildConfig
 import com.algolia.musicologist.R
+import com.algolia.musicologist.model.Song
 import com.algolia.search.saas.Client
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -38,17 +39,20 @@ import org.jetbrains.anko.error
 import org.jetbrains.anko.find
 import org.jetbrains.anko.toast
 import org.json.JSONObject
+import java.util.*
 
 
 class MainActivity : VoiceActivity(), AnkoLogger {
-    private val DEBUG = true;
+    private val DEBUG = true
 
     private val handler = Handler(Looper.getMainLooper())
+    private val random: Random by lazy {
+        Random()
+    }
 
     private lateinit var agent: Agent
     private lateinit var instantSearch: InstantSearch
     private lateinit var searcher: Searcher
-    private lateinit var hits: Hits
     private lateinit var mediaController: MediaControllerCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,7 +65,9 @@ class MainActivity : VoiceActivity(), AnkoLogger {
         configureApiAI()
 
         searcher = Searcher.create(Client("TDNMRH8LS3", "ec222292c9b89b658fe00b34ff341194").getIndex("songs"))
-        hits = find(R.id.hits)
+        hits.setOnItemClickListener(ItemClickSupport.OnItemClickListener { recyclerView, position, v ->
+            Song.fromJSON(hits.get(position))!!.play(this)
+        })
         instantSearch = InstantSearch(hits, searcher)
         agent = Agent(this, handler, find(R.id.micButton))
 
@@ -183,20 +189,18 @@ class MainActivity : VoiceActivity(), AnkoLogger {
                 }
             }
             "Results - select.number" -> {
-                val position = response.result.getIntParameter("position")
-//              TODO Migrate to work with actual Hits widget
-//                if (position != 0) {
-//                    hits.playSong(position)
-//                } else {
-//                    val rank = response.result.getStringParameter("rank")
-//                    rank?.let {
-//                        when (rank) {
-//                            "first" -> hits.playSong(0)
-//                            "last" -> hits.playLastSong()
-//                            else -> hits.playRandomSong()
-//                        }
-//                    }
-//                }
+                var position = response.result.getIntParameter("position")
+                if (position == 0) {
+                    val rank = response.result.getStringParameter("rank")
+                    rank?.let {
+                        position = when (rank) {
+                            "first" -> 0
+                            "last" -> hits.childCount - 1
+                            else -> random.nextInt(hits.childCount)
+                        }
+                    }
+                }
+                Song.fromJSON(hits.get(position))!!.play(this)
             }
             "Default Fallback Intent", "Default Welcome Intent" -> {
             }
