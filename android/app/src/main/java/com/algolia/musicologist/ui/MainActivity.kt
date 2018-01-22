@@ -39,6 +39,7 @@ import org.jetbrains.anko.find
 import org.jetbrains.anko.toast
 import org.json.JSONObject
 import java.util.*
+import kotlin.collections.HashMap
 
 
 class MainActivity : VoiceActivity(), AnkoLogger {
@@ -247,14 +248,16 @@ class MainActivity : VoiceActivity(), AnkoLogger {
 
     private fun wakeupBackend() {
         Volley.newRequestQueue(this).add(object : StringRequest(Method.GET,
-                "http://musicologist-backend.herokuapp.com/wakeup", Response.Listener {}, Response.ErrorListener { error ->
+                "http://musicologist-backend.herokuapp.com/wakeup", Response.Listener { result ->
+            Snackbar.make(find(R.id.micButton), "Backend awoken.", Snackbar.LENGTH_SHORT).show()
+        }, Response.ErrorListener { error ->
             error("Backend seems down: $error.")
-            val speech = "Oh oh... It seems my backend is down... I don't know music anymore..."
+            val speech = "Oh oh... It seems my backend is down..."
             agent.say(speech, "$speech :'(", 500)
         }) {
             var didInitHeaders = false
             override fun getHeaders(): MutableMap<String, String> {
-                val headers = super.getHeaders()
+                val headers = HashMap< String, String>();
                 if (!didInitHeaders) {
                     headers.put("Authorization", "Bearer " + BuildConfig.AUTH_TOKEN)
                     didInitHeaders = true
