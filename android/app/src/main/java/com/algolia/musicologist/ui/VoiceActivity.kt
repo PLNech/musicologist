@@ -1,8 +1,6 @@
 package com.algolia.musicologist.ui
 
-import android.os.Bundle
 import android.os.Handler
-import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
 import com.algolia.musicologist.VoiceApplication
 
@@ -13,10 +11,6 @@ abstract class VoiceActivity : AppCompatActivity() {
 
     private val handler = Handler()
     private val app: VoiceApplication by lazy { application as VoiceApplication }
-
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
-    }
 
     override fun onResume() {
         super.onResume()

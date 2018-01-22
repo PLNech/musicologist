@@ -15,7 +15,7 @@ open class VoiceApplication : Application() {
         bluetoothController = BluetoothControllerImpl(this)
     }
 
-    fun onActivityResume(): Unit {
+    fun onActivityResume() {
         if (activitiesCount++ == 0) { // on become foreground
             bluetoothController.start()
         }

@@ -32,6 +32,7 @@ import org.json.JSONObject
 /**
  * A song object from the data model.
  */
+@Suppress("MemberVisibilityCanBePrivate") // All members could potentially be used
 data class Song(val trackName: String,
                 val artistName: String,
                 val collectionName: String,
@@ -46,12 +47,11 @@ data class Song(val trackName: String,
                 val json: JSONObject) {
 
     companion object {
-        val TITLE = "trackName"
-        val ARTIST = "artistName"
-        val ALBUM = "collectionName"
-        val RELEASE = "release_timestamp"
-        val GENRE = "primaryGenreName"
-        val HIGHLIGHT_ATTRIBUTES = listOf(TITLE, ARTIST, ALBUM, GENRE)
+        const val TITLE = "trackName"
+        const val ARTIST = "artistName"
+        const val ALBUM = "collectionName"
+        const val RELEASE = "release_timestamp"
+        const val GENRE = "primaryGenreName"
 
         fun fromJSON(jsonObject: JSONObject?): Song? {
             var song: Song? = null
@@ -66,10 +66,10 @@ data class Song(val trackName: String,
                 val trackTimeMillis = jsonObject.optInt("trackTimeMillis")
                 val artworkUrl100 = jsonObject.optString("artworkUrl100")
                 val trackViewUrl = jsonObject.optString("trackViewUrl")
-                val release_timestamp = jsonObject.optInt(Song.RELEASE)
+                val releaseTimestamp = jsonObject.optInt(Song.RELEASE)
                 song = Song(trackName, artistName, collectionName, trackPrice,
                         trackNumber, primaryGenreName, trackCount, trackTimeMillis,
-                        artworkUrl100, trackViewUrl, release_timestamp, jsonObject)
+                        artworkUrl100, trackViewUrl, releaseTimestamp, jsonObject)
             }
             return song
         }
