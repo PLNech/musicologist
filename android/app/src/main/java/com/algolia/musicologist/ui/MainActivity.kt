@@ -262,7 +262,7 @@ class MainActivity : VoiceActivity(), AnkoLogger {
             override fun getHeaders(): MutableMap<String, String> {
                 val headers = HashMap< String, String>()
                 if (!didInitHeaders) {
-                    headers.put("Authorization", "Bearer " + BuildConfig.AUTH_TOKEN)
+                    headers["Authorization"] = "Bearer " + BuildConfig.AUTH_TOKEN
                     didInitHeaders = true
                 }
                 return headers
