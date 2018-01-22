@@ -97,8 +97,7 @@ THE SOFTWARE.
             algolia:attribute='@{"collectionName"}'
             algolia:highlighted="@{true}"/>
 
-        <!-- TODO: Track count view -->
-        <TextView
+        <com.algolia.musicologist.ui.TrackCountTextView
             android:id="@+id/track"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
