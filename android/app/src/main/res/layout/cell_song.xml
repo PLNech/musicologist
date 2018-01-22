@@ -127,7 +127,6 @@ THE SOFTWARE.
             algolia:highlighted="@{true}"/>
 
 
-        <!-- TODO: Timestamp count view -->
         <com.algolia.musicologist.ui.TimestampHitView
             android:id="@+id/release"
             style="@style/SongRelease"
