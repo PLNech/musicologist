@@ -42,7 +42,11 @@ import kotlin.collections.HashMap
 
 
 class MainActivity : VoiceActivity(), AnkoLogger {
-    private val DEBUG = true
+    companion object {
+        private val DEBUG = BuildConfig.DEBUG
+        private const val CODE_PERMISSION_REQUEST = 0
+    }
+
 
     private val handler = Handler(Looper.getMainLooper())
     private val random: Random by lazy {
@@ -264,9 +268,5 @@ class MainActivity : VoiceActivity(), AnkoLogger {
                 return headers
             }
         })
-    }
-
-    companion object {
-        private val CODE_PERMISSION_REQUEST = 0
     }
 }

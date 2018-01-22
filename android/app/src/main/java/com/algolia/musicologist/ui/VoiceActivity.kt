@@ -6,9 +6,10 @@ import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
 import com.algolia.musicologist.VoiceApplication
 
-open class VoiceActivity : AppCompatActivity() {
-
-    private val PAUSE_CALLBACK_DELAY: Long = 500
+abstract class VoiceActivity : AppCompatActivity() {
+    companion object {
+        const val PAUSE_CALLBACK_DELAY: Long = 500
+    }
 
     private val handler = Handler()
     private val app: VoiceApplication by lazy { application as VoiceApplication }
