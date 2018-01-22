@@ -23,7 +23,6 @@ import android.view.KeyEvent
 import android.view.View
 import com.algolia.instantsearch.helpers.InstantSearch
 import com.algolia.instantsearch.helpers.Searcher
-import com.algolia.instantsearch.utils.ItemClickSupport
 import com.algolia.musicologist.Agent
 import com.algolia.musicologist.BuildConfig
 import com.algolia.musicologist.R
@@ -65,7 +64,7 @@ class MainActivity : VoiceActivity(), AnkoLogger {
         configureApiAI()
 
         searcher = Searcher.create("TDNMRH8LS3", "ec222292c9b89b658fe00b34ff341194", "songs")
-        hits.setOnItemClickListener(ItemClickSupport.OnItemClickListener { recyclerView, position, v ->
+        hits.setOnItemClickListener({ _, position, _ ->
             Song.fromJSON(hits.get(position))!!.play(this)
         })
         instantSearch = InstantSearch(hits, searcher)
@@ -248,7 +247,7 @@ class MainActivity : VoiceActivity(), AnkoLogger {
 
     private fun wakeupBackend() {
         Volley.newRequestQueue(this).add(object : StringRequest(Method.GET,
-                "http://musicologist-backend.herokuapp.com/wakeup", Response.Listener { result ->
+                "http://musicologist-backend.herokuapp.com/wakeup", Response.Listener { _ ->
             Snackbar.make(find(R.id.micButton), "Backend awoken.", Snackbar.LENGTH_SHORT).show()
         }, Response.ErrorListener { error ->
             error("Backend seems down: $error.")
