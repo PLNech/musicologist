@@ -31,7 +31,9 @@ open class VoiceApplication : Application() {
 }
 
 private class BluetoothControllerImpl(private val application: VoiceApplication) : BluetoothController(application) {
-    val TAG = "BluetoothController"
+    companion object {
+        const val TAG = "BluetoothController"
+    }
 
     override fun onScoAudioConnected() {
         Log.d(TAG, "Bluetooth sco audio started.")
