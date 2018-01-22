@@ -28,7 +28,6 @@ import com.algolia.musicologist.Agent
 import com.algolia.musicologist.BuildConfig
 import com.algolia.musicologist.R
 import com.algolia.musicologist.model.Song
-import com.algolia.search.saas.Client
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -64,7 +63,7 @@ class MainActivity : VoiceActivity(), AnkoLogger {
         requestAudioPermission()
         configureApiAI()
 
-        searcher = Searcher.create(Client("TDNMRH8LS3", "ec222292c9b89b658fe00b34ff341194").getIndex("songs"))
+        searcher = Searcher.create("TDNMRH8LS3", "ec222292c9b89b658fe00b34ff341194", "songs")
         hits.setOnItemClickListener(ItemClickSupport.OnItemClickListener { recyclerView, position, v ->
             Song.fromJSON(hits.get(position))!!.play(this)
         })
