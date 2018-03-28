@@ -10,7 +10,7 @@ client = algoliasearch.Client(app_id, api_key)
 index = client.init_index("songs")
 
 # API.AI
-token_dev = '***REMOVED***'
+token_dev = os.environ.get("APIAI_TOKEN")
 apiai_url = "https://api.api.ai/v1"
 headers = {"Authorization": "Bearer " + token_dev,
            "Content-Type": "application/json"}
