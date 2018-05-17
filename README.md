@@ -1,6 +1,6 @@
 Musicologist is an Android app using Algolia to give music advice through conversation.
 
-# [Presentation on Algolia's forum](https://discourse.algolia.com/t/the-musicologist-search-as-a-conversation/2928/5)
+# [Presentation on Algolia's forum](https://discourse.algolia.com/t/the-musicologist-search-as-a-conversation/2928)
 
 # Demo
 [![Musicologist demo on YouTube](https://img.youtube.com/vi/n2UOctORN_M/0.jpg)](https://www.youtube.com/watch?v=n2UOctORN_M)
