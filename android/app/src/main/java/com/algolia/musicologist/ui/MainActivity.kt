@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.speech.SpeechRecognizer
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -73,6 +74,12 @@ class MainActivity : VoiceActivity(), AnkoLogger {
         })
         instantSearch = InstantSearch(hits, searcher)
         agent = Agent(this, handler, find(R.id.micButton))
+
+        if (!SpeechRecognizer.isRecognitionAvailable(applicationContext)) {
+            agent.say("Speech recognition is not available. Do you have the Google App installed and enabled?")
+            //TODO: Open Google app on Play store`
+            return
+        }
 
         setupMediaButtons()
 
@@ -158,8 +165,14 @@ class MainActivity : VoiceActivity(), AnkoLogger {
 
             override fun onError(error: AIError) {
                 runOnUiThread {
-                    error("Error: $error.")
-                    agent.say("$error.", Snackbar.LENGTH_LONG)
+                    if (error.message.contains("Audio recording error")) {
+                        agent.say("Can't record. Does the Google app have Microphone permission?", Snackbar.LENGTH_INDEFINITE)
+                        //TODO: Open permission screen?
+                    } else {
+                        error("Error: $error.")
+                        agent.say("$error.", Snackbar.LENGTH_LONG)
+                    }
+
                 }
             }
 
@@ -232,7 +245,7 @@ class MainActivity : VoiceActivity(), AnkoLogger {
 
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.RECORD_AUDIO)) {
+                            Manifest.permission.RECORD_AUDIO)) {
 
                 agent.say("I can only talk with you if you let me record audio.")
                 // Show an explanation to the user *asynchronously* -- don't block
@@ -260,7 +273,7 @@ class MainActivity : VoiceActivity(), AnkoLogger {
         }) {
             var didInitHeaders = false
             override fun getHeaders(): MutableMap<String, String> {
-                val headers = HashMap< String, String>()
+                val headers = HashMap<String, String>()
                 if (!didInitHeaders) {
                     headers["Authorization"] = "Bearer " + BuildConfig.AUTH_TOKEN
                     didInitHeaders = true
