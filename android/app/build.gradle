@@ -68,3 +68,7 @@ kotlin {
         coroutines "enable"
     }
 }
+
+gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) { options.compilerArgs << "-Xmaxerrs" << "500" }
+}
