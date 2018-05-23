@@ -1,7 +1,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
-      tools:context="com.algolia.musicologist.ui.MainActivity">
+      tools:context="com.algolia.musicologist.ui.MainActivity"
+      tools:keep="@menu/menu_main">
     <!--TODO: About, GitHub code, backend-->
     <item
         android:id="@+id/action_settings"
