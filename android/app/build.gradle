@@ -30,31 +30,29 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     // Kotlin
-    compile "org.jetbrains.kotlin:kotlin-stdlib"
+    kapt "com.android.databinding:compiler:$plugin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile "org.jetbrains.anko:anko:$anko_version"
 
     // Support Library
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
-    compile 'com.android.support:design:26.1.0'
+    compile "com.android.support:appcompat-v7:$appcompat_version"
+    compile "com.android.support.constraint:constraint-layout:1.1.0"
+    compile "com.android.support:design:$appcompat_version"
 
+    // Network
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile 'ai.api:sdk:2.0.7@aar'
     compile('ai.api:libai:1.4.8') {
         exclude module: 'log4j-core'
     }
 
-    // Network
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-    compile 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
-
     // Presentation
-    compile 'com.algolia:instantsearch-android:1.1.4'
+    compile 'com.algolia:instantsearch-android:1.8.0'
     compile 'com.android.volley:volley:1.0.0'
+    compile 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
     compile('com.vdurmont:emoji-java:3.3.0', {
         exclude group: 'org.json', module: 'json'
     })
-
-    kapt "com.android.databinding:compiler:$plugin_version"
 
     // Test
     testCompile 'junit:junit:4.12'
