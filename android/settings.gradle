@@ -1,3 +1,1 @@
 include ':app'
-include ':instantsearch'
-project(':instantsearch').projectDir = new File(settingsDir, "../../../ISA/instantsearch-android/instantsearch")
