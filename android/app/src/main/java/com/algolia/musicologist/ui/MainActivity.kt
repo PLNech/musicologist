@@ -145,7 +145,7 @@ class MainActivity : VoiceActivity(), AnkoLogger {
 
     private fun configureApiAI() {
         micButton.initialize(AIConfiguration("b2a8a05cfbdb4162bbdfb9c2f4e48a4e",
-                ai.api.AIConfiguration.SupportedLanguages.English,
+                ai.api.AIConfiguration.SupportedLanguages.EnglishUS,
                 AIConfiguration.RecognitionEngine.System))
         micButton.setPartialResultsListener { partialResults ->
             // If you're still talking, stop it TODO: Do it as soon as the button is pressed
